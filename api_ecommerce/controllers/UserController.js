@@ -1,63 +1,52 @@
-import bcrypt from 'bcryptjs'
-import models from '../models'
-import token from '../services/token'
-import resource from '../resources'
+import bcrypt from 'bcryptjs';
+import models from '../models';
+import token from '../services/token';
+import resource from '../resources';
 
 export default {
-    register: async(req,res) => {
+    register: async (req, res) => {
         try {
-            // rol
-            // name
-            // surname
-            // email
-            // password
-            req.body.password = await bcrypt.hash(req.body.password,10);
+            req.body.password = await bcrypt.hash(req.body.password, 10);
             const user = await models.User.create(req.body);
             res.status(200).json(user);
         } catch (error) {
             res.status(500).send({
-                message: "OCURRIO UN PROBLEMA"
+                message: "OCURRIÓ UN PROBLEMA"
             });
-            console.log(error);
         }
     },
-    register_admin: async(req,res) => {
+
+    register_admin: async (req, res) => {
         try {
-            // rol
-            // name
-            // surname
-            // email
-            // password
-            const userV = await models.User.findOne({email: req.body.email});
-            if(userV){
-                res.status(500).send({
+            const userV = await models.User.findOne({ email: req.body.email });
+            if (userV) {
+                return res.status(500).send({
                     message: "EL USUARIO YA EXISTE"
                 });
             }
+
             req.body.rol = "admin";
-            req.body.password = await bcrypt.hash(req.body.password,10);
-            let user = await models.User.create(req.body);
+            req.body.password = await bcrypt.hash(req.body.password, 10);
+            const user = await models.User.create(req.body);
             res.status(200).json({
                 user: resource.User.user_list(user)
             });
         } catch (error) {
             res.status(500).send({
-                message: "OCURRIO UN PROBLEMA"
+                message: "OCURRIÓ UN PROBLEMA"
             });
-            console.log(error);
         }
     },
-    login: async(req,res) => {
-        try {
-            const user = await models.User.findOne({email: req.body.email,state:1});
-            if(user){
-                //SI ESTA RGISTRADO EN EL SISTEMA
-                let compare = await bcrypt.compare(req.body.password,user.password);
-                if(compare){
-                    let tokenT = await token.encode(user._id,user.rol,user.email);
 
+    login: async (req, res) => {
+        try {
+            const user = await models.User.findOne({ email: req.body.email, state: 1 });
+            if (user) {
+                const compare = await bcrypt.compare(req.body.password, user.password);
+                if (compare) {
+                    const tokenT = await token.encode(user._id, user.rol, user.email);
                     const USER_FRONTED = {
-                        token:tokenT,
+                        token: tokenT,
                         user: {
                             _id: user._id,
                             name: user.name,
@@ -65,39 +54,35 @@ export default {
                             surname: user.surname,
                             avatar: user.avatar,
                         },
-                    }
+                    };
 
-                    res.status(200).json({
-                        USER_FRONTED:USER_FRONTED,
-                    })
-                }else{
+                    res.status(200).json({ USER_FRONTED });
+                } else {
                     res.status(500).send({
                         message: "EL USUARIO NO EXISTE"
                     });
                 }
-            }else{
+            } else {
                 res.status(500).send({
                     message: "EL USUARIO NO EXISTE"
                 });
             }
         } catch (error) {
             res.status(500).send({
-                message: "OCURRIO UN PROBLEMA"
+                message: "OCURRIÓ UN PROBLEMA"
             });
-            console.log(error);
         }
     },
-    login_admin: async(req,res) => {
-        try {
-            const user = await models.User.findOne({email: req.body.email,state:1,rol: "admin"});
-            if(user){
-                //SI ESTA RGISTRADO EN EL SISTEMA
-                let compare = await bcrypt.compare(req.body.password,user.password);
-                if(compare){
-                    let tokenT = await token.encode(user._id,user.rol,user.email);
 
+    login_admin: async (req, res) => {
+        try {
+            const user = await models.User.findOne({ email: req.body.email, state: 1, rol: "admin" });
+            if (user) {
+                const compare = await bcrypt.compare(req.body.password, user.password);
+                if (compare) {
+                    const tokenT = await token.encode(user._id, user.rol, user.email);
                     const USER_FRONTED = {
-                        token:tokenT,
+                        token: tokenT,
                         user: {
                             _id: user._id,
                             name: user.name,
@@ -106,89 +91,82 @@ export default {
                             avatar: user.avatar,
                             rol: user.rol,
                         },
-                    }
+                    };
 
-                    res.status(200).json({
-                        USER_FRONTED:USER_FRONTED,
-                    })
-                }else{
+                    res.status(200).json({ USER_FRONTED });
+                } else {
                     res.status(500).send({
                         message: "EL USUARIO NO EXISTE"
                     });
                 }
-            }else{
+            } else {
                 res.status(500).send({
                     message: "EL USUARIO NO EXISTE"
                 });
             }
         } catch (error) {
             res.status(500).send({
-                message: "OCURRIO UN PROBLEMA"
+                message: "OCURRIÓ UN PROBLEMA"
             });
-            console.log(error);
         }
     },
-    update: async(req,res) => {
-        try {
-            if(req.files){
-                var img_path = req.files.avatar.path;
-                var name = img_path.split('\\');
-                var avatar_name = name[2];
-                console.log(avatar_name)
-            }
-            if(req.body.repet_password){
-                req.body.password = await bcrypt.hash(req.body.repet_password,10);
-            }
-            await models.User.findByIdAndUpdate({_id: req.body._id},req.body);
 
-            let UserT = await models.User.findOne({_id: req.body._id});
+    update: async (req, res) => {
+        try {
+            let avatar_name;
+            if (req.files) {
+                const img_path = req.files.avatar.path;
+                const name = img_path.split('\\');
+                avatar_name = name[2];
+            }
+            if (req.body.repet_password) {
+                req.body.password = await bcrypt.hash(req.body.repet_password, 10);
+            }
+            await models.User.findByIdAndUpdate({ _id: req.body._id }, req.body);
+
+            const UserT = await models.User.findOne({ _id: req.body._id });
             res.status(200).json({
                 message: "EL USUARIO SE HA MODIFICADO CORRECTAMENTE",
                 user: resource.User.user_list(UserT),
             });
         } catch (error) {
             res.status(500).send({
-                message: "OCURRIO UN PROBLEMA"
+                message: "OCURRIÓ UN PROBLEMA"
             });
-            console.log(error);
         }
     },
-    list: async(req,res) => {
+
+    list: async (req, res) => {
         try {
-            var search = req.query.search;
+            const search = req.query.search;
             let Users = await models.User.find({
-                $or:[
-                    {"name": new RegExp(search, "i")},
-                    {"surname": new RegExp(search, "i")},
-                    {"email": new RegExp(search, "i")},
+                $or: [
+                    { "name": new RegExp(search, "i") },
+                    { "surname": new RegExp(search, "i") },
+                    { "email": new RegExp(search, "i") },
                 ]
-            }).sort({'createdAt': -1});
+            }).sort({ 'createdAt': -1 });
 
-            Users = Users.map((user) => {
-                return resource.User.user_list(user);
-            })
+            Users = Users.map((user) => resource.User.user_list(user));
 
-            res.status(200).json({
-                users: Users
-            });
+            res.status(200).json({ users: Users });
         } catch (error) {
             res.status(500).send({
-                message: "OCURRIO UN PROBLEMA"
+                message: "OCURRIÓ UN PROBLEMA"
             });
-            console.log(error);
         }
     },
-    remove: async(req,res) => {
+
+    remove: async (req, res) => {
         try {
-            const User = await models.User.findByIdAndDelete({_id: req.query._id});
+            await models.User.findByIdAndDelete({ _id: req.query._id });
             res.status(200).json({
-                message: "EL USUARIO SE ELIMINO CORRECTAMENTE",
+                message: "EL USUARIO SE ELIMINÓ CORRECTAMENTE",
             });
         } catch (error) {
             res.status(500).send({
-                message: "OCURRIO UN PROBLEMA"
+                message: "OCURRIÓ UN PROBLEMA"
             });
-            console.log(error);
         }
     }
-}
+};

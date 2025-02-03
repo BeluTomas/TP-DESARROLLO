@@ -3,22 +3,22 @@ import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';
 import router from './router';
-import * as dotenv from 'dotenv'; 
+import * as dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config(); 
 
 // CONEXIÓN A LA BASE DE DATOS
-mongoose.set('strictQuery', true); 
+mongoose.set('strictQuery', true);
 mongoose.Promise = global.Promise;
 
-const dbUrL = "mongodb://127.0.0.1:27017/ecommerce_udemy";
+const dbUrL = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/ecommerce_udemy";
 
 mongoose.connect(dbUrL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-.then(() => console.log("CONECTADO A LA BD EN EL PUERTO 27017"))
-.catch(err => console.log("Error al conectar a la base de datos: ", err));
+    .then(() => console.log("✅ CONECTADO A LA BASE DE DATOS"))
+    .catch(err => console.error("❌ Error al conectar a la base de datos:", err));
 
 const app = express();
 
@@ -39,14 +39,14 @@ app.set('port', PORT);
 
 // Iniciar el servidor
 const server = app.listen(app.get('port'), () => {
-    console.log(`EL SERVIDOR SE EJECUTÓ PERFECTAMENTE EN EL PUERTO ${PORT}`);
+    console.log(`🚀 SERVIDOR EJECUTÁNDOSE EN EL PUERTO ${PORT}`);
 });
 
 // Manejo de error de puerto en uso
 server.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
-        console.error(`El puerto ${PORT} está en uso, intenta usar otro puerto.`);
+        console.error(`❌ El puerto ${PORT} está en uso. Intenta usar otro puerto.`);
     } else {
-        console.error('Error en el servidor:', err);
+        console.error('❌ Error en el servidor:', err);
     }
 });
