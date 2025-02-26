@@ -5,26 +5,20 @@ import {
   OnInit,
 } from '@angular/core';
 import { TranslationService } from './modules/i18n/translation.service';
-// language list
 import { locale as enLang } from './modules/i18n/vocabs/en';
-import { locale as chLang } from './modules/i18n/vocabs/ch';
 import { locale as esLang } from './modules/i18n/vocabs/es';
-import { locale as jpLang } from './modules/i18n/vocabs/jp';
-import { locale as deLang } from './modules/i18n/vocabs/de';
-import { locale as frLang } from './modules/i18n/vocabs/fr';
 import { SplashScreenService } from './_metronic/partials/layout/splash-screen/splash-screen.service';
 import { Router, NavigationEnd, NavigationError } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TableExtendedService } from './_metronic/shared/crud-table';
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'body[root]',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
+  private unsubscribe: Subscription[] = []; 
 
   constructor(
     private translationService: TranslationService,
@@ -35,11 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // register translations
     this.translationService.loadTranslations(
       enLang,
-      chLang,
-      esLang,
-      jpLang,
-      deLang,
-      frLang
+      esLang
     );
   }
 

@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { URL_SERVICIOS } from 'src/app/config/config';
 import { AuthService } from '../../auth-profile/_services/auth.service';
+import { Observable } from 'rxjs';
+import { AddressClient, AddressClientR, ProfileClientS } from 'src/app/config/interface';
 
 @Injectable({
   providedIn: 'root'
@@ -26,10 +28,10 @@ export class EcommerceAuthService {
     return this.http.post(URL,data,{headers: headers});
   }
 
-  updateAddressClient(data:any) {
+  updateAddressClient(data:any):Observable<AddressClientR> {
     let headers = new HttpHeaders({'token': this.authService.token});
     let URL = URL_SERVICIOS+"address_client/update";
-    return this.http.put(URL,data,{headers: headers});
+    return this.http.put<AddressClientR>(URL,data,{headers: headers});
   }
 
   deleteAddressClient(address_client_id:any){
@@ -46,10 +48,10 @@ export class EcommerceAuthService {
   }
 
   // 
-  showProfileClient(data:any){
+  showProfileClient(data:any):Observable<ProfileClientS>{
     let headers = new HttpHeaders({'token': this.authService.token});
     let URL = URL_SERVICIOS+"home/profile_client";
-    return this.http.post(URL,data,{headers: headers});
+    return this.http.post<ProfileClientS>(URL,data,{headers: headers});
   }
   updateProfileClient(data:any){
     let headers = new HttpHeaders({'token': this.authService.token});

@@ -5,6 +5,8 @@ import { AddNewSliderComponent } from '../add-new-slider/add-new-slider.componen
 import { DeleteNewSliderComponent } from '../delete-new-slider/delete-new-slider.component';
 import { EditNewSliderComponent } from '../edit-new-slider/edit-new-slider.component';
 import { SliderService } from '../_services/slider.service';
+import { Slider, SliderL } from '../interface/slider.interface';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-list-slider',
@@ -13,11 +15,11 @@ import { SliderService } from '../_services/slider.service';
 })
 export class ListSliderComponent implements OnInit {
 
-  sliders:any = [];
-  search:any = "";
-  isLoading$:any = null;
+  sliders:Slider[] = [];
+  search:string = "";
+  isLoading$:Observable<boolean>;
 
-  URL_BACKEND:any = URL_BACKEND;
+  URL_BACKEND:string = URL_BACKEND;
   constructor(
     public _serviceSlider: SliderService,
     public modalService: NgbModal,
@@ -28,7 +30,7 @@ export class ListSliderComponent implements OnInit {
     this.allSliders();
   }
   allSliders(){
-    this._serviceSlider.allSlider(this.search).subscribe((resp:any) => {
+    this._serviceSlider.allSlider(this.search).subscribe((resp:SliderL) => {
       console.log(resp);
       this.sliders = resp.sliders;
     })
@@ -40,16 +42,16 @@ export class ListSliderComponent implements OnInit {
   openCreate(){
     const modalRef = this.modalService.open(AddNewSliderComponent,{centered:true, size: 'md'});
 
-    modalRef.componentInstance.SliderC.subscribe((slider:any) => {
+    modalRef.componentInstance.SliderC.subscribe((slider) => {
       this.sliders.unshift(slider);
     })
   }
 
   editSlider(slider){
     const modalRef = this.modalService.open(EditNewSliderComponent,{centered:true, size: 'md'});
-    modalRef.componentInstance.slider_selected = slider;
+    modalRef.componentInstance.sliderSelected = slider;
 
-    modalRef.componentInstance.SliderE.subscribe((slider:any) => {
+    modalRef.componentInstance.SliderE.subscribe((slider) => {
       let index = this.sliders.findIndex(item => item._id == slider._id);
       if(index != -1){
         this.sliders[index] = slider;
@@ -58,9 +60,9 @@ export class ListSliderComponent implements OnInit {
   }
   delete(slider){
     const modalRef = this.modalService.open(DeleteNewSliderComponent,{centered:true, size: 'md'});
-    modalRef.componentInstance.slider_selected = slider;
+    modalRef.componentInstance.sliderSelected = slider;
 
-    modalRef.componentInstance.SliderD.subscribe((resp:any) => {
+    modalRef.componentInstance.SliderD.subscribe((resp) => {
       let index = this.sliders.findIndex(item => item._id == slider._id);
       if(index != -1){
         this.sliders.splice(index,1);

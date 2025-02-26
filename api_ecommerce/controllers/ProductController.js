@@ -33,6 +33,7 @@ export default {
             });
 
         } catch (error) {
+            console.log(error);
             res.status(500).send({
                 message: "COURRIO UN PROBLEMA"
             });
@@ -67,6 +68,7 @@ export default {
             });
 
         } catch (error) {
+            console.log(error);
             res.status(500).send({
                 message: "COURRIO UN PROBLEMA"
             });
@@ -174,6 +176,7 @@ export default {
                 }
             })
         } catch (error) {
+            console.log(error);
             res.status(500).send({
                 message: "OCURRIO UN PROBLEMA"
             });

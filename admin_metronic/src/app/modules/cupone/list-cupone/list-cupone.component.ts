@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteNewCuponeComponent } from '../delete-new-cupone/delete-new-cupone.component';
 import {CuponeService} from '../_services/cupone.service';
+import { Observable } from 'rxjs';
+import { Cupone, CuponeL } from '../interaface/cupone.interface';
 
 @Component({
   selector: 'app-list-cupone',
@@ -11,9 +13,9 @@ import {CuponeService} from '../_services/cupone.service';
 })
 export class ListCuponeComponent implements OnInit {
 
-  isLoading$ :any = null;
-  search:any = "";
-  cupones:any = [];
+  isLoading$ :Observable<boolean>;
+  search:string = "";
+  cupones:Cupone[] = [];
   constructor(
     public _cuponService: CuponeService,
     public router:Router,
@@ -25,7 +27,7 @@ export class ListCuponeComponent implements OnInit {
     this.allCupons();
   }
   allCupons(){
-    this._cuponService.allCupons(this.search).subscribe((resp:any) => {
+    this._cuponService.allCupons(this.search).subscribe((resp:CuponeL) => {
       console.log(resp);
       this.cupones = resp.cupones;
     })

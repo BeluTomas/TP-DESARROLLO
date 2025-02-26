@@ -1,3 +1,5 @@
+
+
 <!-- <ng-container *ngIf="isLoading">
     <div class="progress progress-modal">
       <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar"
@@ -18,47 +20,104 @@
           <div class="spinner spinner-lg spinner-success"></div>
         </div>
       </ng-container> -->
+      <form action="#" class="form form-label-right" [formGroup]="formGroup">
+        <div class="row">
+          <div class="col-10">
+              <div class="form-group">
+                  <label>Titulo: <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" placeholder="" 
+                  [class.is-invalid]="isControlInvalid('name')"
+                    [class.is-valid]="isControlValid('name')"
+                    formControlName="name"
+                  name="name">
+  
+                  <div class="valid-feedback" *ngIf="isControlValid('name')">
+                      El nombre se ingresó correctamente
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('required', 'name')"
+                  >
+                    Se requiere El nombre
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('minlength', 'name')"
+                  >
+                    El nombre debe tener al menos 3 letras
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('maxlength', 'name')"
+                  >
+                    El nombre debe tener un máximo de 250 letras
+                  </div>
+              </div>
+          </div>
+          <div class="col-10">
+              <div class="form-group">
+                  <label>Link: <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" placeholder="" 
+                  [class.is-invalid]="isControlInvalid('link')"
+                  [class.is-valid]="isControlValid('link')"
+                  formControlName="link"
+                  name="link">
+  
+                  <div class="valid-feedback" *ngIf="isControlValid('link')">
+                      El link se ingresó correctamente
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('required', 'link')"
+                  >
+                    Se requiere El link
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('minlength', 'link')"
+                  >
+                    El link debe tener al menos 3 letras
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('maxlength', 'link')"
+                  >
+                    El link debe tener un máximo de 250 letras
+                  </div>
+              </div>
+          </div>
+          <div class="col-12">
+                  <div class="row">
+                      <div class="col-12">
+                          <label class="form-label">Sube tu imagen: *</label>
+                          <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="customFile"  accept=".jpeg, .bmp, .jpg, .png, .gif, .webp"  (change)="processFile($event)">
+                          <label class="custom-file-label" for="customFile">Choose file</label>
+                      </div>
+                      <div class="col-12">
+                          <div class="" *ngIf="imagenPrevizualizacion">
+                              <img [src]="imagenPrevizualizacion" style="width: 150px;" alt="" srcset="">
+                          </div>
+                      </div>
+                  </div>
+          </div>
+          </div>
+        </div>
+      </form>
 
-      <div class="row">
-        <div class="col-10">
-            <div class="form-group">
-                <label>Titulo: <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" placeholder="" [(ngModel)]="name" name="name">
-            </div>
-        </div>
-        <div class="col-10">
-            <div class="form-group">
-                <label>Link: <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" placeholder="" [(ngModel)]="link" name="link">
-            </div>
-        </div>
-        <div class="col-12">
-                <div class="row">
-                    <div class="col-12">
-                        <label class="form-label">Sube tu imagen: *</label>
-                        <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="customFile"  accept=".jpeg, .bmp, .jpg, .png, .gif, .webp"  (change)="processFile($event)">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
-                    </div>
-                    <div class="col-12">
-                        <div class="" *ngIf="imagen_previzualizacion">
-                            <img [src]="imagen_previzualizacion" style="width: 150px;" alt="" srcset="">
-                        </div>
-                    </div>
-                </div>
-        </div>
-      </div>
-</div>
     <div class="modal-footer">
 
         <button
         type="button"
         class="btn btn-primary btn-elevate mr-2"
         (click)="save()"
+        *ngIf="!isLoading"
+        [disabled]="formGroup.invalid"
       >
         Guardar
       </button>
-
+      <span *ngIf="isLoading" class="spinner spinner-primary mx-5"></span>
+      
       <button
         type="button"
         class="btn btn-light btn-elevate mr-2"

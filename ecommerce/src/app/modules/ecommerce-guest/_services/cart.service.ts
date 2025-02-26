@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { URL_SERVICIOS } from 'src/app/config/config';
 import { AuthService } from '../../auth-profile/_services/auth.service';
+import { Cart, CartL, CartR } from 'src/app/config/interface';
 
 @Injectable({
   providedIn: 'root'
@@ -42,10 +43,10 @@ export class CartService {
     this.cart.next(listCart);
   }
 
-  registerCart(data:any) {
+  registerCart(data:any):Observable<CartR>{
     let headers = new HttpHeaders({'token': this._authService.token});
     let URL = URL_SERVICIOS+"cart/register";
-    return this.http.post(URL,data,{headers: headers});
+    return this.http.post<CartR>(URL,data,{headers: headers});
   }
 
   updateCart(data:any) {
@@ -54,10 +55,10 @@ export class CartService {
     return this.http.put(URL,data,{headers: headers});
   }
 
-  lisCarts(user_id:any){
+  lisCarts(user_id:string):Observable<CartL>{
     let headers = new HttpHeaders({'token': this._authService.token});
     let URL = URL_SERVICIOS+"cart/list?user_id="+user_id;
-    return this.http.get(URL,{headers: headers});
+    return this.http.get<CartL>(URL,{headers: headers});
   }
 
   deleteCart(cart_id:any){

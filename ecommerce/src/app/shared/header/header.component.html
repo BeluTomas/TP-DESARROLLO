@@ -400,18 +400,18 @@
             <div class="card-header">
                 <form action="#">
                     <div class="input-group">
-                        <input type="search" class="form-control" [(ngModel)]="search_product" (keyup.enter)="searchProduct()" name="prod-search" id="prod-search" #filter placeholder="Escribe algo">
+                        <input type="search" class="form-control" [(ngModel)]="searchProduct" (keyup.enter)="searchProductTT()" name="prod-search" id="prod-search" #filter placeholder="Escribe algo">
                         <button type="submit" class="axil-btn btn-bg-primary"><i class="far fa-search"></i></button>
                     </div>
                 </form>
             </div>
             <div class="card-body">
                 <div class="search-result-header">
-                    <h6 class="title">{{ products_search.length }} Resultados encontrados</h6>
+                    <h6 class="title">{{ productsSearch.length }} Resultados encontrados</h6>
                     <a routerLink="/filtro-de-productos" class="view-all">Ver Todo</a>
                 </div>
                 <div class="psearch-results">
-                    <ng-container *ngFor="let product of products_search">
+                    <ng-container *ngFor="let product of productsSearch">
                         <div class="axil-product-list">
                             <div class="thumbnail">
                                 <a [routerLink]="[ '/landing-producto/', product.slug ]" [queryParams]="getRouterDiscount(product)">

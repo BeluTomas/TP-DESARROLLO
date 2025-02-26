@@ -39,7 +39,7 @@
                         <div class="shop-submenu">
                             <ul>
                                 <ng-container *ngFor="let categorie of categories">
-                                    <li [ngClass]="{'current-cat': categories_selecteds.includes(categorie._id)}"><a
+                                    <li [ngClass]="{'current-cat': categoriesSelecteds.includes(categorie._id)}"><a
                                             href="#" (click)="addCategorie(categorie)" onclick="return false;">{{
                                             categorie.title }}</a></li>
                                 </ng-container>
@@ -139,7 +139,7 @@
             <div class="modal-header">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="far fa-times"></i></button>
             </div>
-            <div class="modal-body" *ngIf="product_selected">
+            <div class="modal-body" *ngIf="productSelected">
                 <div class="single-product-thumb">
                     <div class="row">
                         <div class="col-lg-7 mb--40">
@@ -147,15 +147,15 @@
                                 <div class="col-lg-10 order-lg-2">
                                     <div class="single-product-thumbnail product-large-thumbnail axil-product thumbnail-badge zoom-gallery">
                                         
-                                        <ng-container *ngFor="let galeria of product_selected.galerias">
+                                        <ng-container *ngFor="let galeria of productSelected.galerias">
                                             <div class="thumbnail">
                                                 <img [src]="galeria.imagen" alt="Product Images">
-                                                <ng-container *ngIf="product_selected.campaing_discount">
-                                                    <div class="label-block label-right" *ngIf="product_selected.campaing_discount.type_discount == 1">
-                                                        <div class="product-badget">{{ product_selected.campaing_discount.discount }}% OFF</div>
+                                                <ng-container *ngIf="productSelected.campaing_discount">
+                                                    <div class="label-block label-right" *ngIf="productSelected.campaing_discount.type_discount == 1">
+                                                        <div class="product-badget">{{ productSelected.campaing_discount.discount }}% OFF</div>
                                                     </div>
-                                                    <div class="label-block label-right" *ngIf="product_selected.campaing_discount.type_discount == 2">
-                                                        <div class="product-badget">{{ product_selected.campaing_discount.discount }}USD OFF</div>
+                                                    <div class="label-block label-right" *ngIf="productSelected.campaing_discount.type_discount == 2">
+                                                        <div class="product-badget">{{ productSelected.campaing_discount.discount }}USD OFF</div>
                                                     </div>
                                                 </ng-container>
                                                 
@@ -173,7 +173,7 @@
                                 </div>
                                 <div class="col-lg-2 order-lg-1">
                                     <div class="product-small-thumb small-thumb-wrapper">
-                                        <ng-container *ngFor="let galeria of product_selected.galerias">
+                                        <ng-container *ngFor="let galeria of productSelected.galerias">
                                             <div class="small-thumb-img">
                                                 <img [src]="galeria.imagen" alt="thumb image">
                                             </div>
@@ -195,17 +195,17 @@
                                             <a href="#">(<span>1</span> opiniones de clientes)</a>
                                         </div>
                                     </div>
-                                    <h3 class="product-title">{{ product_selected.title }}</h3>
-                                    <span class="price-amount" *ngIf="!product_selected.campaing_discount">{{ product_selected.price_usd }} USD</span>
-                                    <span class="price-amount" *ngIf="product_selected.campaing_discount"> <del>{{ product_selected.price_usd }} USD</del> </span>
-                                    <span class="price-amount" *ngIf="product_selected.campaing_discount"> {{ getCalNewPrice(product_selected) }} USD</span>
+                                    <h3 class="product-title">{{ productSelected.title }}</h3>
+                                    <span class="price-amount" *ngIf="!productSelected.campaing_discount">{{ productSelected.price_usd }} USD</span>
+                                    <span class="price-amount" *ngIf="productSelected.campaing_discount"> <del>{{ productSelected.price_usd }} USD</del> </span>
+                                    <span class="price-amount" *ngIf="productSelected.campaing_discount"> {{ getCalNewPrice(productSelected) }} USD</span>
                                     <ul class="product-meta">
                                         <li><i class="fal fa-check"></i>En stock</li>
                                         <li><i class="fal fa-check"></i>Entrega gratuita disponible</li>
                                         <li><i class="fal fa-check"></i>Tienda oficial</li>
                                     </ul>
                                     <p class="description">
-                                        {{ product_selected.resumen }}
+                                        {{ productSelected.resumen }}
                                     </p>
 
                                     <div class="product-variations-wrapper">
@@ -227,10 +227,10 @@
                                         <!-- End Product Variation  -->
 
                                         <!-- Start Product Variation  -->
-                                        <div class="product-variation" *ngIf="product_selected.type_inventario == 2">
+                                        <div class="product-variation" *ngIf="productSelected.type_inventario == 2">
                                             <h6 class="title">Tamaños:</h6>
                                             <ul class="range-variant">
-                                                <ng-container *ngFor="let variedad of product_selected.variedades">
+                                                <ng-container *ngFor="let variedad of productSelected.variedades">
                                                     <li>{{ variedad.valor }}</li>
                                                 </ng-container>
                                                 
