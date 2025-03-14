@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { URL_BACKEND } from 'src/app/config/config';
+import { urlBackend } from 'src/app/config/config';
 import { AddNewSliderComponent } from '../add-new-slider/add-new-slider.component';
 import { DeleteNewSliderComponent } from '../delete-new-slider/delete-new-slider.component';
 import { EditNewSliderComponent } from '../edit-new-slider/edit-new-slider.component';
@@ -19,7 +19,7 @@ export class ListSliderComponent implements OnInit {
   search:string = "";
   isLoading$:Observable<boolean>;
 
-  URL_BACKEND:string = URL_BACKEND;
+  urlBackend:string = urlBackend;
   constructor(
     public _serviceSlider: SliderService,
     public modalService: NgbModal,

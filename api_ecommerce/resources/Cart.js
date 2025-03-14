@@ -8,7 +8,7 @@ export default {
                 title: cart.product.title,
                 sku: cart.product.sku,
                 slug: cart.product.slug,
-                imagen: process.env.URL_BACKEND+'/api/products/uploads/product/'+cart.product.portada,//*
+                imagen: process.env.urlBackend+'/api/products/uploads/product/'+cart.product.portada,//*
                 categorie: cart.product.categorie,
                 price_pesos: cart.product.price_pesos,
                 price_usd: cart.product.price_usd,

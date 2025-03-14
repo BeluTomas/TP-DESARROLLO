@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { URL_SERVICIOS } from 'src/app/config/config';
+import { urlServicios } from 'src/app/config/config';
 import { AuthService } from '../../auth';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class SliderService {
   allSlider(search=''){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/sliders/list?search="+search;
+    let URL = urlServicios+"/sliders/list?search="+search;
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -32,7 +32,7 @@ export class SliderService {
   createSlider(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/sliders/register";
+    let URL = urlServicios+"/sliders/register";
     return this.http.post(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -41,7 +41,7 @@ export class SliderService {
   updateSlider(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/sliders/update";
+    let URL = urlServicios+"/sliders/update";
     return this.http.put(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -50,7 +50,7 @@ export class SliderService {
   deleteSlider(categorie_id){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/sliders/delete?_id="+categorie_id;
+    let URL = urlServicios+"/sliders/delete?_id="+categorie_id;
     return this.http.delete(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { URL_SERVICIOS } from 'src/app/config/config';
+import { urlServicios } from 'src/app/config/config';
 import { AuthService } from '../../auth';
 
 @Injectable({
@@ -33,7 +33,7 @@ export class ProductService {
     if(categorie){
       LINK += "&categorie="+categorie
     }
-    let URL = URL_SERVICIOS+"/products/list"+LINK;
+    let URL = urlServicios+"/products/list"+LINK;
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -42,7 +42,7 @@ export class ProductService {
   showProduct(product_id=''){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/products/show/"+product_id;
+    let URL = urlServicios+"/products/show/"+product_id;
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -51,7 +51,7 @@ export class ProductService {
   createProduct(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/products/register";
+    let URL = urlServicios+"/products/register";
     return this.http.post(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -60,7 +60,7 @@ export class ProductService {
   updateProduct(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/products/update";
+    let URL = urlServicios+"/products/update";
     return this.http.put(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -69,7 +69,7 @@ export class ProductService {
   deleteProduct(product_id){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/products/delete?_id="+product_id;
+    let URL = urlServicios+"/products/delete?_id="+product_id;
     return this.http.delete(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -80,7 +80,7 @@ export class ProductService {
   createGaleria(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/products/register_imagen";
+    let URL = urlServicios+"/products/register_imagen";
     return this.http.post(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -89,7 +89,7 @@ export class ProductService {
   deleteGaleria(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/products/remove_imagen";
+    let URL = urlServicios+"/products/remove_imagen";
     return this.http.post(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -100,7 +100,7 @@ export class ProductService {
   createVariedad(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/products/register-variedad";
+    let URL = urlServicios+"/products/register-variedad";
     return this.http.post(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -109,7 +109,7 @@ export class ProductService {
   updateVariedad(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/products/update-variedad";
+    let URL = urlServicios+"/products/update-variedad";
     return this.http.put(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -118,7 +118,7 @@ export class ProductService {
   deleteVariedad(variedad_id){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS+"/products/delete-variedad/"+variedad_id;
+    let URL = urlServicios+"/products/delete-variedad/"+variedad_id;
     return this.http.delete(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
