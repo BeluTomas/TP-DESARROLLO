@@ -1,7 +1,4 @@
-/**
- * Main file of webpack config for RTL.
- * Please do not modified unless you know what to do
- */
+
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const WebpackRTLPlugin = require("webpack-rtl-plugin");

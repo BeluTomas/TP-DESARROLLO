@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Toaster } from 'ngx-toast-notifications';
 import { NoticyAlertComponent } from 'src/app/componets/notifications/noticy-alert/noticy-alert.component';
-import { urlBackend } from 'src/app/config/config';
+import { URL_BACKEND } from 'src/app/config/config';
 import { CategoriesService } from '../_services/categories.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -37,7 +37,7 @@ export class EditNewCategorieComponent implements OnInit {
     // this.name = this.categorieSelected.title;
     // this.state = this.categorieSelected.state;
     console.log(this.categorieSelected);
-    this.imagenPrevizualizacion = urlBackend+'api/categories/uploads/categorie/'+this.categorieSelected.imagen;
+    this.imagenPrevizualizacion = URL_BACKEND+'api/categories/uploads/categorie/'+this.categorieSelected.imagen;
     this.loadForm();
   }
 

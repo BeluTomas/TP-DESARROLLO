@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { urlServicios } from 'src/app/config/config';
+import { URL_SERVICIOS } from 'src/app/config/config';
 import { AuthService } from '../../auth';
 
 @Injectable({
@@ -24,7 +24,7 @@ export class CuponeService {
   allCupons(search=''){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/cupones/list?search="+search;
+    let URL = URL_SERVICIOS+"/cupones/list?search="+search;
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -33,7 +33,7 @@ export class CuponeService {
   showCupon(cupone_id=''){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/cupones/show?cupone_id="+cupone_id;
+    let URL = URL_SERVICIOS+"/cupones/show?cupone_id="+cupone_id;
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -42,7 +42,7 @@ export class CuponeService {
   cuponConfig(){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/cupones/config";
+    let URL = URL_SERVICIOS+"/cupones/config";
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -51,7 +51,7 @@ export class CuponeService {
   createCupone(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/cupones/register";
+    let URL = URL_SERVICIOS+"/cupones/register";
     return this.http.post(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -60,7 +60,7 @@ export class CuponeService {
   updateCupone(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/cupones/update";
+    let URL = URL_SERVICIOS+"/cupones/update";
     return this.http.put(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -69,7 +69,7 @@ export class CuponeService {
   deleteCupone(cupone_id){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/cupones/delete?_id="+cupone_id;
+    let URL = URL_SERVICIOS+"/cupones/delete?_id="+cupone_id;
     return this.http.delete(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );

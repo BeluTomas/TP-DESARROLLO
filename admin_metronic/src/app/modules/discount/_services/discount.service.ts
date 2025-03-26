@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { urlServicios } from 'src/app/config/config';
+import { URL_SERVICIOS } from 'src/app/config/config';
 import { AuthService } from '../../auth';
 
 @Injectable({
@@ -24,7 +24,7 @@ export class DiscountService {
   allDiscounts(search=''){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/discount/list?search="+search;
+    let URL = URL_SERVICIOS+"/discount/list?search="+search;
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -33,7 +33,7 @@ export class DiscountService {
   showDiscount(discount_id=''){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/discount/show?discount_id="+discount_id;
+    let URL = URL_SERVICIOS+"/discount/show?discount_id="+discount_id;
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -42,7 +42,7 @@ export class DiscountService {
   discountConfig(){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/discount/config";
+    let URL = URL_SERVICIOS+"/discount/config";
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -51,7 +51,7 @@ export class DiscountService {
   createDiscount(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/discount/register";
+    let URL = URL_SERVICIOS+"/discount/register";
     return this.http.post(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -60,7 +60,7 @@ export class DiscountService {
   updateDiscount(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/discount/update";
+    let URL = URL_SERVICIOS+"/discount/update";
     return this.http.put(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -69,7 +69,7 @@ export class DiscountService {
   deleteDiscount(cupone_id){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = urlServicios+"/discount/delete?_id="+cupone_id;
+    let URL = URL_SERVICIOS+"/discount/delete?_id="+cupone_id;
     return this.http.delete(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
