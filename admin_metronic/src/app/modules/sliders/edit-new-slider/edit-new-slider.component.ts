@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Toaster } from 'ngx-toast-notifications';
 import { NoticyAlertComponent } from 'src/app/componets/notifications/noticy-alert/noticy-alert.component';
-import { urlBackend } from 'src/app/config/config';
+import { URL_BACKEND } from 'src/app/config/config';
 import { SliderService } from '../_services/slider.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Slider } from '../interface/slider.interface';
@@ -37,7 +37,7 @@ export class EditNewSliderComponent implements OnInit {
     // this.name = this.sliderSelected.title;
     // this.link = this.sliderSelected.link;
     // this.state = this.sliderSelected.state;
-    this.imagenPrevizualizacion = urlBackend+'api/sliders/uploads/slider/'+this.sliderSelected.imagen;
+    this.imagenPrevizualizacion = URL_BACKEND+'api/sliders/uploads/slider/'+this.sliderSelected.imagen;
 
     this.loadForm();
   }

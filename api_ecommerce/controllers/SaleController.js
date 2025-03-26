@@ -41,7 +41,7 @@ async function send_email(sale_id) {
         readHTMLFile(process.cwd() + '/mails/email_sale.html', (err, html) => {
             // Modifica la imagen del producto para incluir la URL del backend.
             OrderDetail.map((detail) => {
-                detail.product.imgs = process.env.urlBackend + '/api/products/uploads/product/' + detail.product.portada;
+                detail.product.imgs = process.env.URL_BACKEND + '/api/products/uploads/product/' + detail.product.portada;
                 return detail;
             });
 

@@ -4,7 +4,7 @@ export default {
             _id: categorie._id,
             title: categorie.title,
             imagen: categorie.imagen,
-            imagen_home: process.env.urlBackend+'/api/categories/uploads/categorie/'+categorie.imagen,
+            imagen_home: process.env.URL_BACKEND+'/api/categories/uploads/categorie/'+categorie.imagen,
             state: categorie.state,
         }
     }

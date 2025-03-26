@@ -4,7 +4,7 @@ export default {
 let GALERIAS = [];
     if(product.galerias && product.galerias.length > 0){
          GALERIAS = product.galerias.map((galeria) => {
-         galeria.imagen = process.env.urlBackend+'/api/products/uploads/product/'+galeria.imagen;//*
+         galeria.imagen = process.env.URL_BACKEND+'/api/products/uploads/product/'+galeria.imagen;//*
                 return galeria;
             });
          var VAL = Math.floor(Math.random() * product.galerias.length);//0,1,2
@@ -15,7 +15,7 @@ let GALERIAS = [];
             title: product.title,
             sku: product.sku,
             slug: product.slug,
-            imagen: process.env.urlBackend+'/api/products/uploads/product/'+product.portada,//*
+            imagen: process.env.URL_BACKEND+'/api/products/uploads/product/'+product.portada,//*
             categorie: product.categorie,
             price_pesos: product.price_pesos,
             price_usd: product.price_usd,

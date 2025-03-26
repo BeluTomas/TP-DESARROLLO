@@ -6,7 +6,7 @@ import { AuthModel } from '../_models/auth.model';
 import { AuthHTTPService } from './auth-http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import { urlServicios } from 'src/app/config/config';
+import { URL_SERVICIOS } from 'src/app/config/config';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -63,7 +63,7 @@ export class AuthService implements OnDestroy {
   }
 login(email: string, password: string) {
     this.isLoadingSubject.next(true);
-    let url = urlServicios + "/users/login_admin";
+    let url = URL_SERVICIOS + "/users/login_admin";
     console.log({email, password})
     return this.http.post(url,{email, password}).pipe(
       map((auth: any) => {

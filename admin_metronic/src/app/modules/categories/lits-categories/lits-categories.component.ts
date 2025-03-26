@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { urlBackend } from 'src/app/config/config';
+import { URL_BACKEND } from 'src/app/config/config';
 import { AddNewCategorieComponent } from '../add-new-categorie/add-new-categorie.component';
 import { DeleteNewCategorieComponent } from '../delete-new-categorie/delete-new-categorie.component';
 import { EditNewCategorieComponent } from '../edit-new-categorie/edit-new-categorie.component';
@@ -19,7 +19,7 @@ export class LitsCategoriesComponent implements OnInit {
   search:any = "";
   isLoading$:Observable<boolean>;
 
-  urlBackend:any = urlBackend;
+  URL_BACKEND:any = URL_BACKEND;
   constructor(
     public serviceCategorie: CategoriesService,
     public modalService: NgbModal,
