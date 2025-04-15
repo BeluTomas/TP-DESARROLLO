@@ -21,8 +21,8 @@ export class ForgotPasswordComponent implements OnInit {
   errorStates = ErrorStates;
   isLoading$: Observable<boolean>;
 
-  // private fields
-  private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
+  
+  private unsubscribe: Subscription[] = []; 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService
@@ -34,7 +34,6 @@ export class ForgotPasswordComponent implements OnInit {
     this.initForm();
   }
 
-  // convenience getter for easy access to form fields
   get f() {
     return this.forgotPasswordForm.controls;
   }
@@ -55,12 +54,6 @@ export class ForgotPasswordComponent implements OnInit {
 
   submit() {
     this.errorState = ErrorStates.NotSubmitted;
-    // const forgotPasswordSubscr = this.authService
-    //   .forgotPassword(this.f.email.value)
-    //   .pipe(first())
-    //   .subscribe((result: boolean) => {
-    //     this.errorState = result ? ErrorStates.NoError : ErrorStates.HasError;
-    //   });
-    // this.unsubscribe.push(forgotPasswordSubscr);
+  
   }
 }
