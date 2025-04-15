@@ -21,3 +21,4 @@ export class FirstLetterPipe implements PipeTransform {
       .join('');
   }
 }
+

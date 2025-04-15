@@ -5,6 +5,7 @@ import { NoticyAlertComponent } from 'src/app/componets/notifications/noticy-ale
 import { UsersService } from '../../_services/users.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { User, UserR } from '../../interface/user.interface';
+import { FormReactive } from 'src/app/config/config';
 
 @Component({
   selector: 'app-edit-users',
@@ -24,6 +25,8 @@ export class EditUsersComponent implements OnInit {
 
   formGroup: FormGroup;
   isLoading:Boolean = false;
+
+  formReactive = new FormReactive();
   constructor(
     public modal: NgbActiveModal,
     public userService: UsersService,
@@ -116,22 +119,18 @@ export class EditUsersComponent implements OnInit {
   }
 
   isControlValid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.valid && (control.dirty || control.touched);
+    return this.formReactive.isControlValid(this.formGroup,controlName);
   }
 
   isControlInvalid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.invalid && (control.dirty || control.touched);
+    return this.formReactive.isControlInvalid(this.formGroup,controlName);
   }
 
   controlHasError(validation, controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.hasError(validation) && (control.dirty || control.touched);
+    return this.formReactive.controlHasError(this.formGroup,validation,controlName);
   }
 
   isControlTouched(controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.dirty || control.touched;
+    return this.formReactive.isControlTouched(this.formGroup,controlName);
   }
 }

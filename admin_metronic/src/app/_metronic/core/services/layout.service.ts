@@ -1,133 +1,56 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { BehaviorSubject } from 'rxjs';
-import { DefaultLayoutConfig } from '../../configs/default-layout.config';
-import * as objectPath from 'object-path';
+import { NgbDateAdapter, NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
-const LAYOUT_CONFIG_LOCAL_STORAGE_KEY = `${environment.appVersion}-layoutConfig`;
-
+/**
+ * This Service handles how the date is represented in scripts i.e. ngModel.
+ */
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class LayoutService {
-  private layoutConfigSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-    undefined
-  );
+export class CustomAdapter extends NgbDateAdapter<string> {
 
-  // scope list of css classes
-  private classes = {
-    header: [],
-    header_container: [],
-    header_mobile: [],
-    header_menu: [],
-    aside_menu: [],
-    subheader: [],
-    subheader_container: [],
-    content: [],
-    content_container: [],
-    footer_container: [],
-  };
+  readonly DELIMITER = '/';
 
-  // scope list of html attributes
-  private attrs = {
-    aside_menu: {},
-  };
-
-  constructor() {}
-
-  initConfig(): any {
-    const configFromLocalStorage = localStorage.getItem(
-      LAYOUT_CONFIG_LOCAL_STORAGE_KEY
-    );
-    if (configFromLocalStorage) {
-      try {
-        this.layoutConfigSubject.next(JSON.parse(configFromLocalStorage));
-        return;
-      } catch (error) {
-        this.removeConfig();
-        console.error('config parse from local storage', error);
-      }
+  fromModel(value: string | null): NgbDateStruct | null {
+    if (value) {
+      const date = value.split(this.DELIMITER);
+      return {
+        month: parseInt(date[0], 10),
+        day: parseInt(date[1], 10),
+        year: parseInt(date[2], 10)
+      };
     }
-    this.layoutConfigSubject.next(DefaultLayoutConfig);
+    return null;
   }
 
-  private removeConfig() {
-    localStorage.removeItem(LAYOUT_CONFIG_LOCAL_STORAGE_KEY);
+  toModel(date: NgbDateStruct | null): string | null {
+    return date ? date.month + this.DELIMITER + date.day + this.DELIMITER + date.year : null;
   }
+}
 
-  refreshConfigToDefault() {
-    this.setConfigWithPageRefresh(undefined);
-  }
+/**
+ * This Service handles how the date is rendered and parsed from keyboard i.e. in the bound input field.
+ */
+@Injectable({
+  providedIn: 'root'
+})
+export class CustomDateParserFormatter extends NgbDateParserFormatter {
 
-  getConfig(): any {
-    const config = this.layoutConfigSubject.value;
-    if (!config) {
-      return DefaultLayoutConfig;
+  readonly DELIMITER = '/';
+
+  parse(value: string): NgbDateStruct | null {
+    if (value) {
+      const date = value.split(this.DELIMITER);
+      return {
+        month: parseInt(date[0], 10),
+        day: parseInt(date[1], 10),
+        year: parseInt(date[2], 10)
+      };
     }
-    return config;
+    return null;
   }
 
-  setConfig(config: any) {
-    if (!config) {
-      this.removeConfig();
-    } else {
-      localStorage.setItem(
-        LAYOUT_CONFIG_LOCAL_STORAGE_KEY,
-        JSON.stringify(config)
-      );
-    }
-    this.layoutConfigSubject.next(config);
-  }
-
-  setConfigWithoutLocalStorageChanges(config: any) {
-    this.layoutConfigSubject.next(config);
-  }
-
-  setConfigWithPageRefresh(config: any) {
-    this.setConfig(config);
-    document.location.reload();
-  }
-
-  getProp(path: string): any {
-    return objectPath.get(this.layoutConfigSubject.value, path);
-  }
-
-  setCSSClass(path: string, classesInStr: string) {
-    const cssClasses = this.classes[path];
-    if (!cssClasses) {
-      this.classes[path] = [];
-    }
-    classesInStr
-      .split(' ')
-      .forEach((cssClass: string) => this.classes[path].push(cssClass));
-  }
-
-  getCSSClasses(path: string): string[] {
-    const cssClasses = this.classes[path];
-    if (!cssClasses) {
-      return [];
-    }
-
-    return cssClasses;
-  }
-
-  getStringCSSClasses(path: string) {
-    return this.getCSSClasses(path).join(' ');
-  }
-
-  getHTMLAttributes(path: string): any {
-    const attributesObj = this.attrs[path];
-    if (!attributesObj) {
-      return {};
-    }
-    return attributesObj;
-  }
-
-  setHTMLAttribute(path, attrKey: string, attrValue: any) {
-    const attributesObj = this.attrs[path];
-    if (!attributesObj) {
-      this.attrs[path] = {};
-    }
-    this.attrs[path][attrKey] = attrValue;
+  format(date: NgbDateStruct | null): string {
+    return date ? date.month + this.DELIMITER + date.day + this.DELIMITER + date.year : '';
   }
 }

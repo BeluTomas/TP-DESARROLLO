@@ -6,6 +6,7 @@ import { CategoriesService } from '../_services/categories.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Categorie } from '../interface/categorie.interface';
+import { FormReactive } from 'src/app/config/config';
 
 @Component({
   selector: 'app-add-new-categorie',
@@ -24,7 +25,7 @@ export class AddNewCategorieComponent implements OnInit {
   formGroup: FormGroup;
   isLoading:Boolean = false;
   
-
+  formReactive = new FormReactive();
   constructor(
     public _categorieService: CategoriesService,
     public modal: NgbActiveModal,
@@ -77,22 +78,18 @@ export class AddNewCategorieComponent implements OnInit {
   }
 
   isControlValid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.valid && (control.dirty || control.touched);
+    return this.formReactive.isControlValid(this.formGroup,controlName);
   }
 
   isControlInvalid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.invalid && (control.dirty || control.touched);
+    return this.formReactive.isControlInvalid(this.formGroup,controlName);
   }
 
   controlHasError(validation, controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.hasError(validation) && (control.dirty || control.touched);
+    return this.formReactive.controlHasError(this.formGroup,validation,controlName);
   }
 
   isControlTouched(controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.dirty || control.touched;
+    return this.formReactive.isControlTouched(this.formGroup,controlName);
   }
 }

@@ -12,6 +12,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Categorie } from '../../categories/interface/categorie.interface';
 import { Observable } from 'rxjs';
 import { Product, ProductR } from '../interface/product.interface';
+import { FormReactive } from 'src/app/config/config';
 
 @Component({
   selector: 'app-edit-new-product',
@@ -54,6 +55,7 @@ export class EditNewProductComponent implements OnInit {
   formGroup: FormGroup;
   isLoading:Boolean = false;
 
+  formReactive = new FormReactive();
   constructor(
     public _productService:ProductService,
     public router:Router,
@@ -334,22 +336,18 @@ export class EditNewProductComponent implements OnInit {
   }
 
   isControlValid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.valid && (control.dirty || control.touched);
+    return this.formReactive.isControlValid(this.formGroup,controlName);
   }
 
   isControlInvalid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.invalid && (control.dirty || control.touched);
+    return this.formReactive.isControlInvalid(this.formGroup,controlName);
   }
 
   controlHasError(validation, controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.hasError(validation) && (control.dirty || control.touched);
+    return this.formReactive.controlHasError(this.formGroup,validation,controlName);
   }
 
   isControlTouched(controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.dirty || control.touched;
+    return this.formReactive.isControlTouched(this.formGroup,controlName);
   }
 }

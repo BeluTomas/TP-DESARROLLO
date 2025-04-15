@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Toaster } from 'ngx-toast-notifications';
 import { NoticyAlertComponent } from 'src/app/componets/notifications/noticy-alert/noticy-alert.component';
-import { URL_BACKEND } from 'src/app/config/config';
+import { FormReactive, URL_BACKEND } from 'src/app/config/config';
 import { CategoriesService } from '../_services/categories.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -26,6 +26,7 @@ export class EditNewCategorieComponent implements OnInit {
 
   formGroup: FormGroup;
   isLoading:Boolean = false;
+  formReactive = new FormReactive();
   constructor(
     public _categorieService: CategoriesService,
     public modal:NgbActiveModal,
@@ -69,11 +70,10 @@ export class EditNewCategorieComponent implements OnInit {
   }
 
   save(){
-    console.log(this.name);
-    // if(!this.name){
-    //   this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! Necesita ingresar todos los campos.'`});
-    //   return;
-    // }
+    if(!this.formGroup.value.name){
+      this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! Necesita ingresar el nombre de la categoria.'`});
+      return;
+    }
     let formData = new FormData();
     formData.append('_id',this.categorieSelected._id);
     formData.append('title',this.formGroup.value.name);
@@ -86,28 +86,25 @@ export class EditNewCategorieComponent implements OnInit {
     this._categorieService.updateCategorie(formData).subscribe((resp:any) => {
       console.log(resp);
       this.CategorieE.emit(resp.categorie);
+      this.toaster.open(NoticyAlertComponent,{text:`primary-'Genial! La categoria se ha editado correctamente.'`});
       this.modal.close();
     })
   }
 
   isControlValid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.valid && (control.dirty || control.touched);
+    return this.formReactive.isControlValid(this.formGroup,controlName);
   }
 
   isControlInvalid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.invalid && (control.dirty || control.touched);
+    return this.formReactive.isControlInvalid(this.formGroup,controlName);
   }
 
   controlHasError(validation, controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.hasError(validation) && (control.dirty || control.touched);
+    return this.formReactive.controlHasError(this.formGroup,validation,controlName);
   }
 
   isControlTouched(controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.dirty || control.touched;
+    return this.formReactive.isControlTouched(this.formGroup,controlName);
   }
 
 }

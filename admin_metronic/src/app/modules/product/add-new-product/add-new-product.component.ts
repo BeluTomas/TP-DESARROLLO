@@ -6,6 +6,7 @@ import { ProductService } from '../_services/product.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Categorie, CategorieL } from '../../categories/interface/categorie.interface';
 import { Observable } from 'rxjs';
+import { FormReactive } from 'src/app/config/config';
 
 @Component({
   selector: 'app-add-new-product',
@@ -32,7 +33,8 @@ export class AddNewProductComponent implements OnInit {
 
   formGroup: FormGroup;
   isLoading:Boolean = false;
-  
+
+  formReactive = new FormReactive();
   constructor(
     public _productService:ProductService,
     public _categorieService:CategoriesService,
@@ -181,22 +183,18 @@ export class AddNewProductComponent implements OnInit {
   }
 
   isControlValid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.valid && (control.dirty || control.touched);
+    return this.formReactive.isControlValid(this.formGroup,controlName);
   }
 
   isControlInvalid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.invalid && (control.dirty || control.touched);
+    return this.formReactive.isControlInvalid(this.formGroup,controlName);
   }
 
   controlHasError(validation, controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.hasError(validation) && (control.dirty || control.touched);
+    return this.formReactive.controlHasError(this.formGroup,validation,controlName);
   }
 
   isControlTouched(controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.dirty || control.touched;
+    return this.formReactive.isControlTouched(this.formGroup,controlName);
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LayoutService } from '../../../../../core';
 import { Observable } from 'rxjs';
-import { UserModel } from '../../../../../../modules/auth/_models/user.model';
+// import { UserModel } from '../../../../../../modules/auth/_models/user.model';
 import { AuthService } from '../../../../../../modules/auth/_services/auth.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { AuthService } from '../../../../../../modules/auth/_services/auth.servi
 })
 export class UserOffcanvasComponent implements OnInit {
   extrasUserOffcanvasDirection = 'offcanvas-right';
-  user$: Observable<UserModel>;
+  user$: Observable<any>;
 
   constructor(private layout: LayoutService, private auth: AuthService) {}
 

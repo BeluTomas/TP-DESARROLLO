@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Toaster } from 'ngx-toast-notifications';
 import { NoticyAlertComponent } from 'src/app/componets/notifications/noticy-alert/noticy-alert.component';
-import { URL_BACKEND } from 'src/app/config/config';
+import { FormReactive, URL_BACKEND } from 'src/app/config/config';
 import { SliderService } from '../_services/slider.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Slider } from '../interface/slider.interface';
@@ -26,6 +26,8 @@ export class EditNewSliderComponent implements OnInit {
   
   formGroup: FormGroup;
   isLoading:Boolean = false;
+
+  formReactive = new FormReactive();
   constructor(
     public _sliderService: SliderService,
     public modal:NgbActiveModal,
@@ -98,22 +100,18 @@ export class EditNewSliderComponent implements OnInit {
   }
 
   isControlValid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.valid && (control.dirty || control.touched);
+    return this.formReactive.isControlValid(this.formGroup,controlName);
   }
 
   isControlInvalid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.invalid && (control.dirty || control.touched);
+    return this.formReactive.isControlInvalid(this.formGroup,controlName);
   }
 
   controlHasError(validation, controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.hasError(validation) && (control.dirty || control.touched);
+    return this.formReactive.controlHasError(this.formGroup,validation,controlName);
   }
 
   isControlTouched(controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.dirty || control.touched;
+    return this.formReactive.isControlTouched(this.formGroup,controlName);
   }
 }

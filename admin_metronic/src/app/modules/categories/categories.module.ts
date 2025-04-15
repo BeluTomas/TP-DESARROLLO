@@ -11,7 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbModalModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg';
-import { CRUDTableModule } from 'src/app/_metronic/shared/crud-table';
+// import { CRUDTableModule } from 'src/app/_metronic/shared/crud-table';
 
 
 @NgModule({
@@ -27,7 +27,7 @@ import { CRUDTableModule } from 'src/app/_metronic/shared/crud-table';
     NgbModule,
     ReactiveFormsModule,
     InlineSVGModule,
-    CRUDTableModule,
+    // CRUDTableModule,
     NgbModalModule,
     NgbDatepickerModule,
   ]

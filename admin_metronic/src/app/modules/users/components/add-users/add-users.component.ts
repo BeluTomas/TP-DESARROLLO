@@ -4,6 +4,7 @@ import { Toaster } from 'ngx-toast-notifications';
 import { NoticyAlertComponent } from 'src/app/componets/notifications/noticy-alert/noticy-alert.component';
 import { UsersService } from '../../_services/users.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormReactive } from 'src/app/config/config';
 
 @Component({
   selector: 'app-add-users',
@@ -21,7 +22,8 @@ export class AddUsersComponent implements OnInit {
 
   formGroup: FormGroup;
   isLoading:Boolean = false;
-
+  
+  formReactive = new FormReactive();
   constructor(
     public modal: NgbActiveModal,
     public userService: UsersService,
@@ -112,22 +114,18 @@ export class AddUsersComponent implements OnInit {
   }
 
   isControlValid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.valid && (control.dirty || control.touched);
+    return this.formReactive.isControlValid(this.formGroup,controlName);
   }
 
   isControlInvalid(controlName: string): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.invalid && (control.dirty || control.touched);
+    return this.formReactive.isControlInvalid(this.formGroup,controlName);
   }
 
   controlHasError(validation, controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.hasError(validation) && (control.dirty || control.touched);
+    return this.formReactive.controlHasError(this.formGroup,validation,controlName);
   }
 
   isControlTouched(controlName): boolean {
-    const control = this.formGroup.controls[controlName];
-    return control.dirty || control.touched;
+    return this.formReactive.isControlTouched(this.formGroup,controlName);
   }
 }

@@ -1,249 +1,133 @@
 import { Injectable } from '@angular/core';
-import { LayoutService } from './layout.service';
+import { environment } from 'src/environments/environment';
+import { BehaviorSubject } from 'rxjs';
+import { DefaultLayoutConfig } from '../../configs/default-layout.config';
+import * as objectPath from 'object-path';
+
+const LAYOUT_CONFIG_LOCAL_STORAGE_KEY = `${environment.appVersion}-layoutConfig`;
 
 @Injectable({
   providedIn: 'root',
 })
-export class LayoutInitService {
-  constructor(private layout: LayoutService) {
-  }
+export class LayoutService {
+  private layoutConfigSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
+    undefined
+  );
 
-  init() {
-    this.layout.initConfig();
+  // scope list of css classes
+  private classes = {
+    header: [],
+    header_container: [],
+    header_mobile: [],
+    header_menu: [],
+    aside_menu: [],
+    subheader: [],
+    subheader_container: [],
+    content: [],
+    content_container: [],
+    footer_container: [],
+  };
 
-    this.preInitLayout();
-    // init base layout
-    this.initLayout();
-    this.initLoader();
+  // scope list of html attributes
+  private attrs = {
+    aside_menu: {},
+  };
 
-    // init header and subheader menu
-    this.initHeader();
-    this.initSubheader();
+  constructor() {}
 
-    // init content
-    this.initContent();
-    // init aside and aside menu
-    this.initAside();
-
-    // init footer
-    this.initFooter();
-
-    this.initSkins();
-  }
-
-  // init base layout
-  private preInitLayout() {
-    const config = this.layout.getConfig();
-    const updatedConfig = Object.assign({}, config);
-    const subheaderFixed = this.layout.getProp('subheader.fixed');
-    const headerSelfFixedDesktop = this.layout.getProp(
-      'header.self.fixed.desktop'
+  initConfig(): any {
+    const configFromLocalStorage = localStorage.getItem(
+      LAYOUT_CONFIG_LOCAL_STORAGE_KEY
     );
-    if (subheaderFixed && headerSelfFixedDesktop) {
-      updatedConfig.subheader.style = 'solid';
-    } else {
-      updatedConfig.subheader.fixed = false;
-    }
-
-    this.layout.setConfigWithoutLocalStorageChanges(updatedConfig);
-  }
-
-  private initLayout() {
-    const selfBodyBackgroundImage = this.layout.getProp(
-      'self.body.background-image'
-    );
-    if (selfBodyBackgroundImage) {
-      document.body.style.backgroundImage = `url("${selfBodyBackgroundImage}")`;
-    }
-
-    const selfBodyClass = (
-      this.layout.getProp('self.body.class') || ''
-    ).toString();
-    if (selfBodyClass) {
-      const bodyClasses: string[] = selfBodyClass.split(' ');
-      bodyClasses.forEach((cssClass) => document.body.classList.add(cssClass));
-    }
-  }
-
-  private initLoader() { }
-
-  // init header and subheader menu
-  private initHeader() {
-    // Fixed header
-    const headerSelfFixedDesktop = this.layout.getProp(
-      'header.self.fixed.desktop'
-    );
-    if (headerSelfFixedDesktop) {
-      document.body.classList.add('header-fixed');
-      this.layout.setCSSClass('header', 'header-fixed');
-    } else {
-      document.body.classList.add('header-static');
-    }
-
-    const headerSelfFixedMobile = this.layout.getProp(
-      'header.self.fixed.mobile'
-    );
-    if (headerSelfFixedMobile) {
-      document.body.classList.add('header-mobile-fixed');
-      this.layout.setCSSClass('header_mobile', 'header-mobile-fixed');
-    }
-
-    // Menu
-    const headerMenuSelfDisplay = this.layout.getProp(
-      'header.menu.self.display'
-    );
-    const headerMenuSelfLayout = this.layout.getProp('header.menu.self.layout');
-    if (headerMenuSelfDisplay) {
-      this.layout.setCSSClass(
-        'header_menu',
-        `header-menu-layout-${headerMenuSelfLayout}`
-      );
-
-      if (this.layout.getProp('header.menu.self.rootArrow')) {
-        this.layout.setCSSClass('header_menu', 'header-menu-root-arrow');
+    if (configFromLocalStorage) {
+      try {
+        this.layoutConfigSubject.next(JSON.parse(configFromLocalStorage));
+        return;
+      } catch (error) {
+        this.removeConfig();
+        console.error('config parse from local storage', error);
       }
     }
-
-    if (this.layout.getProp('header.self.width') === 'fluid') {
-      this.layout.setCSSClass('header_container', 'container-fluid');
-    } else {
-      this.layout.setCSSClass('header_container', 'container');
-    }
+    this.layoutConfigSubject.next(DefaultLayoutConfig);
   }
 
-  private initSubheader() {
-    const subheaderDisplay = this.layout.getProp('subheader.display');
-    if (subheaderDisplay) {
-      document.body.classList.add('subheader-enabled');
-    } else {
-      return;
-    }
-
-    // Fixed content head
-    const subheaderFixed = this.layout.getProp('subheader.fixed');
-    const headerSelfFixedDesktop = this.layout.getProp(
-      'header.self.fixed.desktop'
-    );
-    if (subheaderFixed && headerSelfFixedDesktop) {
-      document.body.classList.add('subheader-fixed');
-    }
-
-    const subheaderStyle = this.layout.getProp('subheader.style');
-    if (subheaderStyle) {
-      this.layout.setCSSClass('subheader', `subheader-${subheaderStyle}`);
-    }
-
-    if (this.layout.getProp('subheader.width') === 'fluid') {
-      this.layout.setCSSClass('subheader_container', 'container-fluid');
-    } else {
-      this.layout.setCSSClass('subheader_container', 'container');
-    }
-
-    if (this.layout.getProp('subheader.clear')) {
-      this.layout.setCSSClass('subheader', 'mb-0');
-    }
+  private removeConfig() {
+    localStorage.removeItem(LAYOUT_CONFIG_LOCAL_STORAGE_KEY);
   }
 
-  // init content
-  private initContent() {
-    if (this.layout.getProp('content.fit-top')) {
-      this.layout.setCSSClass('content', 'pt-0');
-    }
-
-    if (this.layout.getProp('content.fit-bottom')) {
-      this.layout.setCSSClass('content', 'pb-0');
-    }
-
-    if (this.layout.getProp('content.width') === 'fluid') {
-      this.layout.setCSSClass('content_container', 'container-fluid');
-    } else {
-      this.layout.setCSSClass('content_container', 'container');
-    }
+  refreshConfigToDefault() {
+    this.setConfigWithPageRefresh(undefined);
   }
 
-  // init aside and aside menu
-  private initAside() {
-    if (this.layout.getProp('aside.self.display') !== true) {
-      return;
+  getConfig(): any {
+    const config = this.layoutConfigSubject.value;
+    if (!config) {
+      return DefaultLayoutConfig;
     }
+    return config;
+  }
 
-    // Enable Aside
-    document.body.classList.add('aside-enabled');
-
-    // Fixed Aside
-    if (this.layout.getProp('aside.self.fixed')) {
-      document.body.classList.add('aside-fixed');
-      this.layout.setCSSClass('aside', 'aside-fixed');
+  setConfig(config: any) {
+    if (!config) {
+      this.removeConfig();
     } else {
-      document.body.classList.add('aside-static');
-    }
-
-    // Check Aside
-    if (this.layout.getProp('aside.self.display') !== true) {
-      return;
-    }
-
-    // Default fixed
-    if (this.layout.getProp('aside.self.minimize.default')) {
-      document.body.classList.add('aside-minimize');
-    }
-
-    if (this.layout.getProp('aside.self.minimize.hoverable')) {
-      document.body.classList.add('aside-minimize-hoverable');
-    }
-
-    // Menu
-    // Dropdown Submenu
-    const asideMenuDropdown = this.layout.getProp('aside.menu.dropdown');
-    if (asideMenuDropdown) {
-      this.layout.setCSSClass('aside_menu', 'aside-menu-dropdown');
-      this.layout.setHTMLAttribute('aside_menu', 'data-menu-dropdown', '1');
-    }
-
-    // Scrollable Menu
-    if (asideMenuDropdown !== true) {
-      this.layout.setHTMLAttribute('aside_menu', 'data-menu-scroll', '1');
-    } else {
-      this.layout.setHTMLAttribute('aside_menu', 'data-menu-scroll', '0');
-    }
-
-    const asideMenuSubmenuDropdownHoverTimout = this.layout.getProp(
-      'aside.menu.submenu.dropdown.hoverTimeout'
-    );
-    if (asideMenuSubmenuDropdownHoverTimout) {
-      this.layout.setHTMLAttribute(
-        'aside_menu',
-        'data-menu-dropdown-timeout',
-        asideMenuSubmenuDropdownHoverTimout
+      localStorage.setItem(
+        LAYOUT_CONFIG_LOCAL_STORAGE_KEY,
+        JSON.stringify(config)
       );
     }
+    this.layoutConfigSubject.next(config);
   }
 
-  // init footer
-  private initFooter() {
-    // Fixed header
-    if (this.layout.getProp('footer.fixed') === true) {
-      document.body.classList.add('footer-fixed');
-    }
-
-    if (this.layout.getProp('footer.width') === 'fluid') {
-      this.layout.setCSSClass('footer_container', 'container-fluid');
-    } else {
-      this.layout.setCSSClass('footer_container', 'container');
-    }
+  setConfigWithoutLocalStorageChanges(config: any) {
+    this.layoutConfigSubject.next(config);
   }
 
-  /**
-   * Set the body class name based on page skin options
-   */
-  private initSkins() {
-    const headerSelfTheme = this.layout.getProp('header.self.theme') || '';
-    const brandSelfTheme = this.layout.getProp('brand.self.theme') || '';
-    const asideSelfDisplay = this.layout.getProp('aside.self.display');
-    if (asideSelfDisplay === false) {
-      document.body.classList.add(`brand-${headerSelfTheme}`);
-    } else {
-      document.body.classList.add(`brand-${brandSelfTheme}`);
+  setConfigWithPageRefresh(config: any) {
+    this.setConfig(config);
+    document.location.reload();
+  }
+
+  getProp(path: string): any {
+    return objectPath.get(this.layoutConfigSubject.value, path);
+  }
+
+  setCSSClass(path: string, classesInStr: string) {
+    const cssClasses = this.classes[path];
+    if (!cssClasses) {
+      this.classes[path] = [];
     }
+    classesInStr
+      .split(' ')
+      .forEach((cssClass: string) => this.classes[path].push(cssClass));
+  }
+
+  getCSSClasses(path: string): string[] {
+    const cssClasses = this.classes[path];
+    if (!cssClasses) {
+      return [];
+    }
+
+    return cssClasses;
+  }
+
+  getStringCSSClasses(path: string) {
+    return this.getCSSClasses(path).join(' ');
+  }
+
+  getHTMLAttributes(path: string): any {
+    const attributesObj = this.attrs[path];
+    if (!attributesObj) {
+      return {};
+    }
+    return attributesObj;
+  }
+
+  setHTMLAttribute(path, attrKey: string, attrValue: any) {
+    const attributesObj = this.attrs[path];
+    if (!attributesObj) {
+      this.attrs[path] = {};
+    }
+    this.attrs[path][attrKey] = attrValue;
   }
 }
