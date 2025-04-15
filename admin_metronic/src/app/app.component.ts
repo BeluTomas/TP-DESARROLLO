@@ -26,7 +26,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     private tableService: TableExtendedService
   ) {
-    // register translations
     this.translationService.loadTranslations(
       enLang,
       esLang
@@ -36,15 +35,10 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        // clear filtration paginations and others
         this.tableService.setDefaults();
-        // hide splash screen
         this.splashScreenService.hide();
-
-        // scroll to top on every route change
         window.scrollTo(0, 0);
 
-        // to display back the body content
         setTimeout(() => {
           document.body.classList.add('page-loaded');
         }, 500);
