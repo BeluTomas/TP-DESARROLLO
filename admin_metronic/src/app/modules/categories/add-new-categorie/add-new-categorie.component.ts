@@ -3,6 +3,9 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Toaster } from 'ngx-toast-notifications';
 import { NoticyAlertComponent } from 'src/app/componets/notifications/noticy-alert/noticy-alert.component';
 import { CategoriesService } from '../_services/categories.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { Categorie } from '../interface/categorie.interface';
 
 @Component({
   selector: 'app-add-new-categorie',
@@ -11,50 +14,85 @@ import { CategoriesService } from '../_services/categories.service';
 })
 export class AddNewCategorieComponent implements OnInit {
 
-  @Output() CategorieC: EventEmitter<any> = new EventEmitter();
+  @Output() CategorieC: EventEmitter<Categorie> = new EventEmitter();
 
-  isLoading$:any;
-  name:any = null;
+  isLoading$: Observable<boolean>;;
+  name: string = null;
+  imagenFile: File = null;
+  imagenPrevizualizacion: string | ArrayBuffer = null;
 
-  imagen_file:any = null;
-  imagen_previzualizacion:any = null;
+  formGroup: FormGroup;
+  isLoading:Boolean = false;
+  
+
   constructor(
     public _categorieService: CategoriesService,
-    public modal:NgbActiveModal,
+    public modal: NgbActiveModal,
     public toaster: Toaster,
+    private fb: FormBuilder,
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void { 
+    this.loadForm();
   }
 
-  processFile($event){
-    console.log($event.target);
-    if($event.target.files[0].type.indexOf("image") < 0){
-      this.imagen_previzualizacion = null;
-      this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! Necesita ingresar un archivo de tipo imagen.'`});
+  loadForm() {
+      this.formGroup = this.fb.group({
+        name: [null, 
+          Validators.compose([
+            Validators.required,
+            Validators.minLength(1),
+            Validators.min(1),
+            Validators.maxLength(250),
+          ])
+        ],
+      });
+    }
+
+  processFile($event) {
+    if ($event.target.files[0].type.indexOf("image") < 0) {
+      this.imagenPrevizualizacion = null;
+      this.toaster.open(NoticyAlertComponent, { text: `danger-'Upps! Necesita ingresar un archivo de tipo imagen.'` });
       return;
     }
-    this.imagen_file = $event.target.files[0];
+    this.imagenFile = $event.target.files[0];
     let reader = new FileReader();
-    reader.readAsDataURL(this.imagen_file);
-    reader.onloadend = () => this.imagen_previzualizacion = reader.result;
+    reader.readAsDataURL(this.imagenFile);
+    reader.onloadend = () => this.imagenPrevizualizacion = reader.result;
   }
 
-  save(){
-    console.log(this.name);
-    if(!this.name || !this.imagen_file){
-      this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! Necesita ingresar todos los campos.'`});
+  save() {
+    if (!this.imagenFile) {
+      this.toaster.open(NoticyAlertComponent, { text: `danger-'Upps! Necesita ingresar la imagen.'` });
       return;
     }
     let formData = new FormData();
-    formData.append('title',this.name);
-    formData.append('portada',this.imagen_file);
+    formData.append('title', this.formGroup.value.name);
+    formData.append('portada', this.imagenFile);
 
-    // 
-    this._categorieService.createCategorie(formData).subscribe((resp:any) => {
-      console.log(resp);
+    this._categorieService.createCategorie(formData).subscribe((resp: Categorie) => {
       this.CategorieC.emit(resp);
       this.modal.close();
-    })
+    });
+  }
+
+  isControlValid(controlName: string): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.valid && (control.dirty || control.touched);
+  }
+
+  isControlInvalid(controlName: string): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.invalid && (control.dirty || control.touched);
+  }
+
+  controlHasError(validation, controlName): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.hasError(validation) && (control.dirty || control.touched);
+  }
+
+  isControlTouched(controlName): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.dirty || control.touched;
   }
 }

@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { Router } from '@angular/router';
 import { fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { Cart, CartL, CartR, Product } from 'src/app/config/interface';
 import { CartService } from 'src/app/modules/ecommerce-guest/_services/cart.service';
 
 declare function headerIconToggle():any;
@@ -16,13 +17,13 @@ declare function alertSuccess([]):any;
 })
 export class HeaderComponent implements OnInit,AfterViewInit {
 
-  listCarts:any = [];
+  listCarts:Cart[] = [];
 
-  totalCarts:any = 0;
+  totalCarts:number = 0;
   user:any;
 
-  search_product:any = null;
-  products_search:any = [];
+  searchProduct:string = '';
+  productsSearch:Product[] = [];
 
   source:any;
   @ViewChild("filter") filter?:ElementRef;
@@ -37,16 +38,15 @@ export class HeaderComponent implements OnInit,AfterViewInit {
       headerIconToggle();
     }, 50);
     this.user = this.cartService._authService.user;
-    this.cartService.currentDataCart$.subscribe((resp:any) => {
+    this.cartService.currentDataCart$.subscribe((resp) => {
       console.log(resp);
       this.listCarts = resp;
-      this.totalCarts = this.listCarts.reduce((sum:any,item:any) => sum + item.total, 0);
+      this.totalCarts = this.listCarts.reduce((sum:number,item:Cart) => sum + item.total, 0);
     })
     if(this.cartService._authService.user){
-      this.cartService.lisCarts(this.cartService._authService.user._id).subscribe((resp:any) => {
+      this.cartService.lisCarts(this.cartService._authService.user._id).subscribe((resp:CartL) => {
         console.log(resp);
-        // this.listCarts = resp.carts;
-        resp.carts.forEach((cart:any) => {
+        resp.carts.forEach((cart:Cart) => {
           this.cartService.changeCart(cart);
         });
       })
@@ -56,17 +56,28 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   ngAfterViewInit(): void {
     this.source = fromEvent(this.filter?.nativeElement, "keyup");
     this.source.pipe(debounceTime(500)).subscribe((c:any) => {
-      // console.log(this.search_product);
       let data = {
-        search_product: this.search_product,
+        searchProduct: this.searchProduct,
       }
-      if(this.search_product.length > 1){
+      if(this.searchProduct.length > 1){
         this.cartService.searchProduct(data).subscribe((resp:any) => {
           console.log(resp);
-          this.products_search = resp.products;
+          this.productsSearch = resp.products;
         })
       }
     })
+  }
+
+  searchProductTT(){
+    let data = {
+      searchProduct: this.searchProduct,
+    }
+    if(this.searchProduct.length > 1){
+      this.cartService.searchProduct(data).subscribe((resp:any) => {
+        console.log(resp);
+        this.productsSearch = resp.products;
+      })
+    }
   }
 
   isHome(){
@@ -77,35 +88,32 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     this.cartService._authService.logout();
   }
 
-  getRouterDiscount(product:any){
+  getRouterDiscount(product:Product){
     if(product.campaing_discount){
       return {_id: product.campaing_discount._id};
     }
     return {};
   }
 
-  getDiscountProduct(product:any){
+  getDiscountProduct(product:Product){
     if(product.campaing_discount){
-      if(product.campaing_discount.type_discount == 1){// 1 es porcentaje
+      if(product.campaing_discount.type_discount == 1){
         return product.price_usd*product.campaing_discount.discount*0.01;
-      }else{// 2 es moneda
+      }else{
         return product.campaing_discount.discount;
       }
     }
     return 0;
   }
 
-  removeCart(cart:any){
+  removeCart(cart:Cart){
     this.cartService.deleteCart(cart._id).subscribe((resp:any) =>{
       console.log(resp);
       this.cartService.removeItemCart(cart);
     })
   }
 
-  searchProduct(){
-
-  }
-  addCart(product:any) {
+  addCart(product:Product) {
     if(!this.cartService._authService.user){
       alertDanger("NECESITAS AUTENTICARTE PARA PODER AGREGAR EL PRODUCTO AL CARRITO");
       return;
@@ -138,8 +146,8 @@ export class HeaderComponent implements OnInit,AfterViewInit {
       subtotal: product.price_usd - this.getDiscountProduct(product),//*1
       total: (product.price_usd - this.getDiscountProduct(product))*1,
     }
-    this.cartService.registerCart(data).subscribe((resp:any) => {
-      if(resp.message == 403){
+    this.cartService.registerCart(data).subscribe((resp:CartR) => {
+      if(resp.message == 403 && resp.message_text){
         alertDanger(resp.message_text);
         return;
       }else{

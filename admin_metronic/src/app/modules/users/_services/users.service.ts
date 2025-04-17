@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { URL_SERVICIOS } from 'src/app/config/config';
+import { urlServicios } from 'src/app/config/config';
 import { AuthService } from '../../auth';
 
 @Injectable({
@@ -24,7 +24,7 @@ export class UsersService {
   allUsers(search){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS + "/users/list?search="+search;
+    let URL = urlServicios + "/users/list?search="+search;
     return this.http.get(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -33,7 +33,7 @@ export class UsersService {
   createUser(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS + "/users/register_admin";
+    let URL = urlServicios + "/users/register_admin";
     return this.http.post(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -42,7 +42,7 @@ export class UsersService {
   updateUser(data){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS + "/users/update";
+    let URL = urlServicios + "/users/update";
     return this.http.put(URL,data,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -51,7 +51,7 @@ export class UsersService {
   deleteUser(user_id){
     this.isLoadingSubject.next(true);
     let headers = new HttpHeaders({'token': this.authservice.token});
-    let URL = URL_SERVICIOS + "/users/delete?_id="+user_id;
+    let URL = urlServicios + "/users/delete?_id="+user_id;
     return this.http.delete(URL,{headers: headers}).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );

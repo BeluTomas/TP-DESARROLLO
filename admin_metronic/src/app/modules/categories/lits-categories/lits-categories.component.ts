@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { URL_BACKEND } from 'src/app/config/config';
+import { urlBackend } from 'src/app/config/config';
 import { AddNewCategorieComponent } from '../add-new-categorie/add-new-categorie.component';
 import { DeleteNewCategorieComponent } from '../delete-new-categorie/delete-new-categorie.component';
 import { EditNewCategorieComponent } from '../edit-new-categorie/edit-new-categorie.component';
 import { CategoriesService } from '../_services/categories.service';
+import { Categorie, CategorieL } from '../interface/categorie.interface';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-lits-categories',
@@ -15,20 +17,20 @@ export class LitsCategoriesComponent implements OnInit {
 
   categories:any = [];
   search:any = "";
-  isLoading$:any = null;
+  isLoading$:Observable<boolean>;
 
-  URL_BACKEND:any = URL_BACKEND;
+  urlBackend:any = urlBackend;
   constructor(
-    public _serviceCategorie: CategoriesService,
+    public serviceCategorie: CategoriesService,
     public modalService: NgbModal,
   ) { }
 
   ngOnInit(): void {
-    this.isLoading$ = this._serviceCategorie.isLoading$;
+    this.isLoading$ = this.serviceCategorie.isLoading$;
     this.allCategories();
   }
   allCategories(){
-    this._serviceCategorie.allCategories(this.search).subscribe((resp:any) => {
+    this.serviceCategorie.allCategories(this.search).subscribe((resp:CategorieL) => {
       this.categories = resp.categories;
     })
   }
@@ -39,16 +41,16 @@ export class LitsCategoriesComponent implements OnInit {
   openCreate(){
     const modalRef = this.modalService.open(AddNewCategorieComponent,{centered:true, size: 'md'});
 
-    modalRef.componentInstance.CategorieC.subscribe((categorie:any) => {
+    modalRef.componentInstance.CategorieC.subscribe((categorie:Categorie) => {
       this.categories.unshift(categorie);
     })
   }
 
   editCategorie(categorie){
     const modalRef = this.modalService.open(EditNewCategorieComponent,{centered:true, size: 'md'});
-    modalRef.componentInstance.categorie_selected = categorie;
+    modalRef.componentInstance.categorieSelected = categorie;
 
-    modalRef.componentInstance.CategorieE.subscribe((categorie:any) => {
+    modalRef.componentInstance.CategorieE.subscribe((categorie:Categorie) => {
       let index = this.categories.findIndex(item => item._id == categorie._id);
       if(index != -1){
         this.categories[index] = categorie;
@@ -57,9 +59,9 @@ export class LitsCategoriesComponent implements OnInit {
   }
   delete(categorie){
     const modalRef = this.modalService.open(DeleteNewCategorieComponent,{centered:true, size: 'md'});
-    modalRef.componentInstance.categorie_selected = categorie;
+    modalRef.componentInstance.categorieSelected = categorie;
 
-    modalRef.componentInstance.CategorieD.subscribe((resp:any) => {
+    modalRef.componentInstance.CategorieD.subscribe((resp:string) => {
       let index = this.categories.findIndex(item => item._id == categorie._id);
       if(index != -1){
         this.categories.splice(index,1);

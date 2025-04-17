@@ -16,7 +16,7 @@ export default {
             }
             // Crea un nuevo slider en la base de datos.
             const slider = await models.Slider.create(req.body);
-            res.status(200).json(slider); // Responde con el slider creado.
+            res.status(200).json(resource.Slider.slider_list(slider)); // Responde con el slider creado.
         } catch (error) {
             res.status(500).send({
                 message: "OCURRIO UN PROBLEMA" // Responde con un mensaje de error.

@@ -135,7 +135,7 @@
                     </table>
                   </div>
 
-                  <ng-container *ngIf="!sale_detail_selected">
+                  <ng-container *ngIf="!saleDetailSelected">
                     <div class="table-responsive" *ngIf="is_detail_sale">
                       <table class="table">
                         <thead>
@@ -191,7 +191,7 @@
                     >
                   </ng-container>
 
-                  <ng-container *ngIf="sale_detail_selected">
+                  <ng-container *ngIf="saleDetailSelected">
                     <!-- Start Comment Respond  -->
                     <div class="comment-respond pro-des-commend-respond mt--0">
                       <h5 class="title mb--30">Agrega una reseña</h5>
@@ -252,7 +252,7 @@
                             <div class="form-submit">
                               <button
                                 type="button"
-                                *ngIf="!sale_detail_selected.review"
+                                *ngIf="!saleDetailSelected.review"
                                 (click)="save()"
                                 class="axil-btn btn-bg-primary w-auto"
                               >
@@ -260,7 +260,7 @@
                               </button>
                               <button
                                 type="button"
-                                *ngIf="sale_detail_selected.review"
+                                *ngIf="saleDetailSelected.review"
                                 (click)="save()"
                                 class="axil-btn btn-bg-primary w-auto"
                               >
@@ -325,7 +325,7 @@
                                         onclick="return false;"
                                         class="address-edit"
                                         (click)="
-                                          addressClientSelected(list_address)
+                                        addressClientSelectedT(list_address)
                                         "
                                         ><i class="far fa-edit"></i
                                       ></a>
@@ -354,133 +354,271 @@
                           </div>
                         </div>
                       </div>
-                      <div class="axil-checkout-billing">
-                        <h4 class="title mb--40">Detalles de facturacion</h4>
-                        <div class="row">
-                          <div class="col-lg-6">
-                            <div class="form-group">
-                              <label>Nombres Completos <span>*</span></label>
-                              <input
-                                type="text"
-                                id="first-name"
-                                [(ngModel)]="name"
-                                name="name"
-                                placeholder="Adam"
-                              />
+                      <ng-container *ngIf="formGroup">
+                        <form class="axil-checkout-billing" [formGroup]="formGroup">
+                            <h4 class="title mb--40">Detalles de facturacion</h4>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Nombres Completo <span>*</span></label>
+                                        <input type="text" id="first-name" 
+                                        [class.is-invalid]="isControlInvalid('name')"
+                                        [class.is-valid]="isControlValid('name')"
+                                        formControlName="name"
+                                        name="name" placeholder="Adam">
+
+                                        <div class="valid-feedback" *ngIf="isControlValid('name')">
+                                            El nombre se ingresó correctamente
+                                        </div>
+                                        <div
+                                        class="invalid-feedback"
+                                        *ngIf="controlHasError('required', 'name')"
+                                        >
+                                        Se requiere El nombre
+                                        </div>
+                                        <div
+                                        class="invalid-feedback"
+                                        *ngIf="controlHasError('minlength', 'name')"
+                                        >
+                                        El nombre debe tener al menos 3 letras
+                                        </div>
+                                        <div
+                                        class="invalid-feedback"
+                                        *ngIf="controlHasError('maxlength', 'name')"
+                                        >
+                                        El nombre debe tener un máximo de 250 letras
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Apellido Completo <span>*</span></label>
+                                        <input type="text" id="last-name"
+                                        [class.is-invalid]="isControlInvalid('surname')"
+                                        [class.is-valid]="isControlValid('surname')"
+                                        formControlName="surname"
+                                        name="surname" placeholder="John">
+
+                                        <div class="valid-feedback" *ngIf="isControlValid('surname')">
+                                            El apellido se ingresó correctamente
+                                        </div>
+                                        <div
+                                          class="invalid-feedback"
+                                          *ngIf="controlHasError('required', 'surname')"
+                                        >
+                                          Se requiere El apellido
+                                        </div>
+                                        <div
+                                          class="invalid-feedback"
+                                          *ngIf="controlHasError('minlength', 'surname')"
+                                        >
+                                          El apellido debe tener al menos 3 letras
+                                        </div>
+                                        <div
+                                          class="invalid-feedback"
+                                          *ngIf="controlHasError('maxlength', 'surname')"
+                                        >
+                                          El apellido debe tener un máximo de 250 letras
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-                          <div class="col-lg-6">
                             <div class="form-group">
-                              <label>Apellidos Completos <span>*</span></label>
-                              <input
-                                type="text"
-                                id="last-name"
-                                [(ngModel)]="surname"
-                                name="surname"
-                                placeholder="John"
-                              />
+                                <label>Pais <span>*</span></label>
+                                <select id="Region" [class.is-invalid]="isControlInvalid('pais')"
+                                [class.is-valid]="isControlValid('pais')"
+                                formControlName="pais" name="pais">
+                                    <option value="Peru">Peru</option>
+                                    <option value="Argentina">Argentina</option>
+                                    <option value="Colombia">Colombia</option>
+                                    <option value="Chile">Chile</option>
+                                    <option value="Brasil">Brasil</option>
+                                </select>
+
+                                <div class="valid-feedback" *ngIf="isControlValid('pais')">
+                                    El pais se ingresó correctamente
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('required', 'pais')"
+                                >
+                                  Se requiere El pais
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('minlength', 'pais')"
+                                >
+                                  El pais debe tener al menos 1 letras
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('maxlength', 'pais')"
+                                >
+                                  El pais debe tener un máximo de 35 letras
+                                </div>
                             </div>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label>Pais <span>*</span></label>
-                          <select id="Region" [(ngModel)]="pais" name="pais">
-                            <option value="Argentina">Argentina</option>
-                            <option value="Peru">Peru</option>
-                            <option value="Colombia">Colombia</option>
-                            <option value="Chile">Chile</option>
-                            <option value="Brazil">Brasil</option>
-                          </select>
-                        </div>
-                        <div class="form-group">
-                          <label>Dirección <span>*</span></label>
-                          <input
-                            type="text"
-                            id="address1"
-                            class="mb--15"
-                            [(ngModel)]="address"
-                            name="address"
-                            placeholder="Calle y numero"
-                          />
-                          <input
-                            type="text"
-                            id="address2"
-                            [(ngModel)]="referencia"
-                            name="referencia"
-                            placeholder="Departamento, piso, numero (opcional)"
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label>Provincia</label>
-                          <input
-                            type="text"
-                            [(ngModel)]="region"
-                            name="region"
-                            id="country"
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label>Ciudad <span>*</span></label>
-                          <input
-                            type="text"
-                            [(ngModel)]="ciudad"
-                            name="ciudad"
-                            id="town"
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label>Telefono <span>*</span></label>
-                          <input
-                            type="tel"
-                            [(ngModel)]="telefono"
-                            name="telefono"
-                            id="phone"
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label>Email <span>*</span></label>
-                          <input
-                            type="email"
-                            [(ngModel)]="email"
-                            name="email"
-                            id="email"
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label>Notas (opcional)</label>
-                          <textarea
-                            id="notes"
-                            rows="2"
-                            [(ngModel)]="nota"
-                            name="nota"
-                            placeholder="Notas sobre tu orden."
-                          ></textarea>
-                        </div>
-                        <button
-                          type="button"
-                          *ngIf="!address_client_selected"
-                          (click)="store()"
-                          class="axil-btn btn-bg-primary checkout-btn"
-                        >
-                          REGISTRAR DIRECCIÓN
-                        </button>
-                        <button
-                          type="button"
-                          *ngIf="address_client_selected"
-                          (click)="store()"
-                          class="axil-btn btn-bg-primary checkout-btn"
-                        >
-                          GUARDAR CAMBIOS DIRECCIÓN
-                        </button>
-                      </div>
+                            <div class="form-group">
+                                <label>Dirección <span>*</span></label>
+                                <input type="text" id="address1" class="mb--15" 
+                                [class.is-invalid]="isControlInvalid('address')"
+                                [class.is-valid]="isControlValid('address')"
+                                formControlName="address"
+                                name="address" placeholder="Calle y numero">
+                                <div class="valid-feedback" *ngIf="isControlValid('address')">
+                                    La dirección se ingresó correctamente
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('required', 'address')"
+                                >
+                                  Se requiere La dirección
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('minlength', 'address')"
+                                >
+                                  La dirección debe tener al menos 1 letras
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('maxlength', 'address')"
+                                >
+                                  La dirección debe tener un máximo de 250 letras
+                                </div>
+                                <input type="text" id="address2" [class.is-invalid]="isControlInvalid('referencia')"
+                                [class.is-valid]="isControlValid('referencia')"
+                                formControlName="referencia" name="referencia" placeholder="Departamento, piso, numero (opcional)">
+                            </div>
+                            <div class="form-group">
+                                <label>Provincia</label>
+                                <input type="text" [class.is-invalid]="isControlInvalid('region')"
+                                [class.is-valid]="isControlValid('region')"
+                                formControlName="region" name="region" id="country">
+
+                                <div class="valid-feedback" *ngIf="isControlValid('region')">
+                                    La región se ingresó correctamente
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('required', 'region')"
+                                >
+                                  Se requiere La región
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('minlength', 'region')"
+                                >
+                                  La región debe tener al menos 1 letras
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('maxlength', 'region')"
+                                >
+                                  La región debe tener un máximo de 35 letras
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Ciudad <span>*</span></label>
+                                <input type="text" [class.is-invalid]="isControlInvalid('ciudad')"
+                                [class.is-valid]="isControlValid('ciudad')"
+                                formControlName="ciudad" name="ciudad" id="town">
+
+                                <div class="valid-feedback" *ngIf="isControlValid('ciudad')">
+                                    La ciudad se ingresó correctamente
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('required', 'ciudad')"
+                                >
+                                  Se requiere La ciudad
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('minlength', 'ciudad')"
+                                >
+                                  La ciudad debe tener al menos 1 letras
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('maxlength', 'ciudad')"
+                                >
+                                  La ciudad debe tener un máximo de 35 letras
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Telefono <span>*</span></label>
+                                <input type="tel" [class.is-invalid]="isControlInvalid('telefono')"
+                                [class.is-valid]="isControlValid('telefono')"
+                                formControlName="telefono" name="telefono" id="phone">
+
+                                <div class="valid-feedback" *ngIf="isControlValid('telefono')">
+                                    El telefono se ingresó correctamente
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('required', 'telefono')"
+                                >
+                                  Se requiere El telefono
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('minlength', 'telefono')"
+                                >
+                                  El telefono debe tener al menos 1 letras
+                                </div>
+                                <div
+                                  class="invalid-feedback"
+                                  *ngIf="controlHasError('maxlength', 'telefono')"
+                                >
+                                  El telefono debe tener un máximo de 35 letras
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Email <span>*</span></label>
+                                <input type="email" [class.is-invalid]="isControlInvalid('email')"
+                                [class.is-valid]="isControlValid('email')"
+                                formControlName="email" name="email" id="email">
+
+                                <div class="valid-feedback" *ngIf="isControlValid('email')">
+                                    El correo electrónico se ingresó correctamente
+                                </div>
+                                <div
+                                class="invalid-feedback"
+                                *ngIf="controlHasError('required', 'email')"
+                                >
+                                    Correo electronico es requerido
+                                </div>
+                                <div
+                                class="invalid-feedback"
+                                *ngIf="controlHasError('email', 'email')"
+                                >
+                                    El formato de correo electrónico es incorrecto
+                                </div>
+                                <div
+                                class="invalid-feedback"
+                                *ngIf="controlHasError('maxLength', 'email')"
+                                >
+                                    El correo debe tener un máximo de 250 letras
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Notas (opcional)</label>
+                                <textarea id="notes" rows="2" [class.is-invalid]="isControlInvalid('nota')"
+                                [class.is-valid]="isControlValid('nota')"
+                                formControlName="nota" name="nota" placeholder="Aclaraciones sobre tu pedido."></textarea>
+                            </div>
+                            <button type="button" *ngIf="!addressClientSelected" (click)="store()" class="axil-btn btn-bg-primary checkout-btn" [disabled]="formGroup.invalid">REGISTRAR DIRECCIÓN</button>
+                            <button type="button" *ngIf="addressClientSelected" (click)="store()" class="axil-btn btn-bg-primary checkout-btn" [disabled]="formGroup.invalid">GUARDAR CAMBIOS DIRECCIÓN</button>
+                        </form>
+                    </ng-container>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="tab-pane fade" id="nav-account" role="tabpanel">
                 <div class="col-lg-9">
-                  <div class="axil-dashboard-account">
-                    <form class="account-details-form">
+                  <div class="axil-dashboard-account"  *ngIf="formGroup2">
+                    <form class="account-details-form" [formGroup]="formGroup2">
                       <div class="row">
                         <div class="col-lg-6">
                           <div class="form-group">
@@ -488,9 +626,33 @@
                             <input
                               type="text"
                               class="form-control"
-                              [(ngModel)]="name_c"
-                              name="name_c"
+                              [class.is-invalid]="isControlInvalid2('name')"
+                              [class.is-valid]="isControlValid2('name')"
+                              formControlName="name"
+                              name="name"
                             />
+
+                            <div class="valid-feedback" *ngIf="isControlValid2('name')">
+                                El nombre se ingresó correctamente
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('required', 'name')"
+                            >
+                              Se requiere El nombre
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('minlength', 'name')"
+                            >
+                              El nombre debe tener al menos 3 letras
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('maxlength', 'name')"
+                            >
+                              El nombre debe tener un máximo de 250 letras
+                            </div>
                           </div>
                         </div>
                         <div class="col-lg-6">
@@ -499,9 +661,33 @@
                             <input
                               type="text"
                               class="form-control"
-                              [(ngModel)]="surname_c"
-                              name="surname_c"
+                              [class.is-invalid]="isControlInvalid2('surname')"
+                              [class.is-valid]="isControlValid2('surname')"
+                              formControlName="surname"
+                              name="surname"
                             />
+
+                            <div class="valid-feedback" *ngIf="isControlValid2('surname')">
+                                El apellido se ingresó correctamente
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('required', 'surname')"
+                            >
+                              Se requiere El apellido
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('minlength', 'surname')"
+                            >
+                              El apellido debe tener al menos 3 letras
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('maxlength', 'surname')"
+                            >
+                              El apellido debe tener un máximo de 250 letras
+                            </div>
                           </div>
                         </div>
                         <div class="col-12">
@@ -510,9 +696,33 @@
                             <input
                               type="text"
                               class="form-control"
-                              [(ngModel)]="email_c"
-                              name="email_c"
+                              [class.is-invalid]="isControlInvalid2('email')"
+                              [class.is-valid]="isControlValid2('email')"
+                              formControlName="email"
+                              name="email"
                             />
+
+                            <div class="valid-feedback" *ngIf="isControlValid2('email')">
+                                El correo electrónico se ingresó correctamente
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('required', 'email')"
+                            >
+                                Correo electronico es requerido
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('email', 'email')"
+                            >
+                                El formato de correo electrónico es incorrecto
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('maxLength', 'email')"
+                            >
+                                El correo debe tener un máximo de 250 letras
+                            </div>
                           </div>
                         </div>
                         <div class="col-12">
@@ -521,27 +731,68 @@
                             <label>Nueva contraseña</label>
                             <input
                               type="password"
-                              [(ngModel)]="password"
+                              [class.is-invalid]="isControlInvalid2('password')"
+                              [class.is-valid]="isControlValid2('password')"
+                              formControlName="password"
                               name="password"
                               class="form-control"
                             />
+
+                            <div class="valid-feedback" *ngIf="isControlValid2('password')">
+                                La contraseña se ingresó correctamente
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('required', 'password')"
+                            >
+                              Se requiere La contraseña
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('minlength', 'password')"
+                            >
+                              La contraseña debe tener al menos 6 letras
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('maxlength', 'password')"
+                            >
+                              La contraseña debe tener un máximo de 250 letras
+                            </div>
                           </div>
                           <div class="form-group">
                             <label>Confirmar nueva contraseña</label>
                             <input
                               type="password"
-                              [(ngModel)]="password_repet"
-                              name="password_repet"
+                              [class.is-invalid]="isControlInvalid2('passwordRepet')"
+                              [class.is-valid]="isControlValid2('passwordRepet')"
+                              formControlName="passwordRepet"
+                              name="passwordRepet"
                               class="form-control"
                             />
+
+                            <div class="valid-feedback" *ngIf="isControlValid2('passwordRepet')">
+                                La contraseña se ingresó correctamente
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError2('required', 'passwordRepet')"
+                            >
+                              Se requiere La contraseña
+                            </div>
+
                           </div>
                           <div class="form-group mb--0">
-                            <input
+                            <!-- <input
                               type="button"
                               (click)="updateProfileClient()"
                               class="axil-btn"
+                              [disabled]="formGroup2.invalid"
                               value="Guardar cambios"
-                            />
+                            /> -->
+                            <button type="submit" class="axil-btn btn-bg-primary submit-btn"
+                          [disabled]="formGroup2.invalid" [disabled]="formGroup2.invalid" (click)="updateProfileClient()">Guardar cambios</button>
+
                           </div>
                         </div>
                       </div>

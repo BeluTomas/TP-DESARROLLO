@@ -23,9 +23,6 @@ import { DatePipe } from '@angular/common';
 
 function appInitializer(authService: AuthService) {
   return () => {
-    // return new Promise((resolve) => {
-    //   authService.getUserByToken().subscribe().add(resolve);
-    // });
   };
 }
 
@@ -54,12 +51,7 @@ function appInitializer(authService: AuthService) {
     ToastNotificationsModule.forRoot({duration: 5000, position: 'top-right'})
   ],
   providers: [
-    // {
-    //   provide: APP_INITIALIZER,
-    //   useFactory: appInitializer,
-    //   multi: true,
-    //   deps: [AuthService],
-    // },
+   
     DatePipe,
     {
       provide: HIGHLIGHT_OPTIONS,

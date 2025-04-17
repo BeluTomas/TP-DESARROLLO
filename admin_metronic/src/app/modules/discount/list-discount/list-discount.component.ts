@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteNewDiscountComponent } from '../delete-new-discount/delete-new-discount.component';
 import { DiscountService } from '../_services/discount.service';
+import { Observable } from 'rxjs';
+import { DiscountL } from '../interaface/discount.interface';
 
 @Component({
   selector: 'app-list-discount',
@@ -12,7 +14,7 @@ import { DiscountService } from '../_services/discount.service';
 })
 export class ListDiscountComponent implements OnInit {
 
-  isLoading$ :any = null;
+  isLoading$ :Observable<boolean>;
   search:any = "";
   discounts:any = [];
   constructor(
@@ -27,7 +29,7 @@ export class ListDiscountComponent implements OnInit {
     this.allCupons();
   }
   allCupons(){
-    this._discountService.allDiscounts(this.search).subscribe((resp:any) => {
+    this._discountService.allDiscounts(this.search).subscribe((resp:DiscountL) => {
       console.log(resp);
       this.discounts = resp.discounts;
     })
@@ -44,7 +46,7 @@ export class ListDiscountComponent implements OnInit {
   }
   delete(discount){
     const modalRef = this.modalService.open(DeleteNewDiscountComponent,{centered:true, size: 'md'});
-    modalRef.componentInstance.discount_selected = discount;
+    modalRef.componentInstance.discountSelected = discount;
 
     modalRef.componentInstance.DiscountD.subscribe((resp:any) => {
       let index = this.discounts.findIndex(item => item._id == discount._id);

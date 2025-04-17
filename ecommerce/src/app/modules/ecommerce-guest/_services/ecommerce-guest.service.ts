@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { URL_SERVICIOS } from 'src/app/config/config';
 import { AuthService } from '../../auth-profile/_services/auth.service';
+import { Observable } from 'rxjs';
+import { ConfiaAll } from 'src/app/config/interface';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +24,9 @@ export class EcommerceGuestService {
     return this.http.get(URL);
   }
 
-  configInitial(){
+  configInitial(): Observable<ConfiaAll>{
     let URL = URL_SERVICIOS+"/home/config_initial";
-    return this.http.get(URL);
+    return this.http.get<ConfiaAll>(URL);
   }
 
   filterProduct(data:any){

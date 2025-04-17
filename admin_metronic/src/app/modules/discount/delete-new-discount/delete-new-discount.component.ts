@@ -12,7 +12,7 @@ import { DiscountService } from '../_services/discount.service';
 export class DeleteNewDiscountComponent implements OnInit {
 
   @Output() DiscountD: EventEmitter<any> = new EventEmitter();
-  @Input() discount_selected:any;
+  @Input() discountSelected:any;
 
   constructor(
     public modal: NgbActiveModal,
@@ -25,7 +25,7 @@ export class DeleteNewDiscountComponent implements OnInit {
 
 
   delete(){
-    this.discountService.deleteDiscount(this.discount_selected._id).subscribe((resp:any) => {
+    this.discountService.deleteDiscount(this.discountSelected._id).subscribe((resp:any) => {
       console.log(resp);
       this.DiscountD.emit("");
       this.toaster.open(NoticyAlertComponent,{text:`success-'EL DESCUENTO  SE ELIMINO CORRECTAMENTE.'`});

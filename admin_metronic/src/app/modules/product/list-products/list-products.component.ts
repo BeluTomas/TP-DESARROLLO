@@ -6,6 +6,9 @@ import { NoticyAlertComponent } from 'src/app/componets/notifications/noticy-ale
 import { CategoriesService } from '../../categories/_services/categories.service';
 import { DeleteNewProductComponent } from '../delete-new-product/delete-new-product.component';
 import { ProductService } from '../_services/product.service';
+import { Observable } from 'rxjs';
+import { Categorie, CategorieL } from '../../categories/interface/categorie.interface';
+import { Product, ProductL } from '../interface/product.interface';
 @Component({
   selector: 'app-list-products',
   templateUrl: './list-products.component.html',
@@ -13,12 +16,12 @@ import { ProductService } from '../_services/product.service';
 })
 export class ListProductsComponent implements OnInit {
 
-  products:any = [];
-  isLoading$:any;
-  search:any = null;
-  categorie:any = '';
+  products:Product[] = [];
+  isLoading$:Observable<boolean>;
+  search:string = null;
+  categorie:string = '';
 
-  categories:any = [];
+  categories:Categorie[] = [];
   constructor(
     public _productService:ProductService,
     public router:Router,
@@ -30,7 +33,7 @@ export class ListProductsComponent implements OnInit {
   ngOnInit(): void {
     this.isLoading$ = this._productService.isLoading$;
     this.allProducts();
-    this._categorieService.allCategories().subscribe((resp:any) => {
+    this._categorieService.allCategories().subscribe((resp:CategorieL) => {
       console.log(resp);
       this.categories = resp.categories;
       this.loadServices();
@@ -46,7 +49,7 @@ export class ListProductsComponent implements OnInit {
 
   allProducts(){
 
-    this._productService.allProducts(this.search,this.categorie).subscribe((resp:any) => {
+    this._productService.allProducts(this.search,this.categorie).subscribe((resp:ProductL) => {
       console.log(resp);
       this.products = resp.products;
     })
@@ -65,7 +68,7 @@ export class ListProductsComponent implements OnInit {
     modalRef.componentInstance.product = product;
 
     modalRef.componentInstance.ProductD.subscribe((resp:any) => {
-      let index = this.products.findIndex(item => item._id == product._id);
+      let index = this.products.findIndex((item) => item._id == product._id);
       if(index != -1){
         this.products.splice(index,1);
         this.toaster.open(NoticyAlertComponent,{text:`primary-'EL PRODUCTO SE ELIMINO CORRECTAMENTE'`});

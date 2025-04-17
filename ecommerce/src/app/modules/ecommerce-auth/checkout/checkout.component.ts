@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CartService } from '../../ecommerce-guest/_services/cart.service';
 import { EcommerceAuthService } from '../_services/ecommerce-auth.service';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AddressClient, AddressClientR, Cart } from 'src/app/config/interface';
 
 declare function alertDanger([]):any;
 declare function alertSuccess([]):any;
@@ -14,25 +16,28 @@ export class CheckoutComponent implements OnInit {
 
   @ViewChild('paypal',{static: true}) paypalElement?: ElementRef;
 
-  listAdressClient:any = [];
-  name:any = null;
-  surname:any = null;
-  address:any = null;
-  referencia:any = null;
-  region:any = null;
-  ciudad:any = null;
-  telefono:any = null;
-  email:any = null;
-  nota:any = null;
-  pais:any = 'Peru';
+  listAdressClient:AddressClient[] = [];
+  name:string = '';
+  surname:string = '';
+  address:string = '';
+  referencia:string = '';
+  region:string = '';
+  ciudad:string = '';
+  telefono:string = '';
+  email:string = '';
+  nota:string = '';
+  pais:string = 'Argentina';
 
-  address_client_selected:any = null;
+  addressClientSelected:AddressClient | undefined;
 
-  listCarts:any = [];
-  totalCarts:any = 0;
+  listCarts:Cart[] = [];
+  totalCarts:number = 0;
+
+  formGroup: FormGroup | undefined;
   constructor(
     public authEcommerce: EcommerceAuthService,
     public cartService: CartService,
+    private fb: FormBuilder,
   ) { }
 
   ngOnInit(): void {
@@ -41,29 +46,26 @@ export class CheckoutComponent implements OnInit {
       this.listAdressClient = resp.address_client;
     })
 
-    this.cartService.currentDataCart$.subscribe((resp:any) => {
+    this.loadForm();
+
+    this.cartService.currentDataCart$.subscribe((resp) => {
       console.log(resp);
       this.listCarts = resp;
-      this.totalCarts = this.listCarts.reduce((sum:any,item:any) => sum + item.total, 0);
+      this.totalCarts = this.listCarts.reduce((sum:number,item:Cart) => sum + item.total, 0);
     })
 
     paypal.Buttons({
-      // optional styling for buttons
-      // https://developer.paypal.com/docs/checkout/standard/customize/buttons-style-guide/
       style: {
         color: "gold",
         shape: "rect",
         layout: "vertical"
       },
-      // set up the transaction
       createOrder: (data:any, actions:any) => {
-          // pass in any options from the v2 orders create call:
-          // https://developer.paypal.com/api/orders/v2/#orders-create-request-body
           if(this.listCarts.length == 0){
             alertDanger("NO SE PUEDE PROCESAR UNA ORDEN SIN NINGUN ELEMENTO DENTRO DEL CARRITO");
             return;
           }
-          if(!this.address_client_selected){
+          if(!this.addressClientSelected){
             alertDanger("NECESITAS SELECCIONAR UNA DIRECIÓN DE ENVIO");
             return;
           }
@@ -81,12 +83,9 @@ export class CheckoutComponent implements OnInit {
           return actions.order.create(createOrderPayload);
       },
 
-      // finalize the transaction
       onApprove: async (data:any, actions:any) => {
           
           let Order = await actions.order.capture();
-  
-          // Order.purchase_units[0].payments.captures[0].id
 
           let sale = {
             user: this.authEcommerce.authService.user._id,
@@ -114,18 +113,89 @@ export class CheckoutComponent implements OnInit {
             alertSuccess(resp.message);
             location.reload();
           })
-          // return actions.order.capture().then(captureOrderHandler);
       },
 
-      // handle unrecoverable errors
       onError: (err:any) => {
           console.error('An error prevented the buyer from checking out with PayPal');
       }
     }).render(this.paypalElement?.nativeElement);
   }
 
+  loadForm() {
+    this.formGroup = this.fb.group({
+      name: [null, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(250),
+        ])
+      ],
+      surname: [null,
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(250),
+        ])
+      ],
+      email: [null,
+        Validators.compose([
+          Validators.required,
+          Validators.email,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(250),
+        ])
+      ],
+      address: [null, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(250),
+        ])
+      ],
+      region: [null, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(35),
+        ])
+      ],
+      ciudad: [null, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(35),
+        ])
+      ],
+      pais: ['Argentina', 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(35),
+        ])
+      ],
+      telefono: [null, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(25),
+        ])
+      ],
+      nota: [null],
+      referencia: [null],
+      user: [this.authEcommerce.authService.user._id]
+    });
+  }
+
   store(){
-    if(this.address_client_selected){
+    if(this.addressClientSelected){
       this.updateAddress();
     }else{
       this.registerAddress();
@@ -133,98 +203,76 @@ export class CheckoutComponent implements OnInit {
   }
 
   registerAddress(){
-    if(!this.name ||
-      !this.surname
-      || !this.address
-      || !this.region
-      || !this.ciudad
-      || !this.telefono
-      || !this.email ||
-      !this.pais){
-      alertDanger("NECESITAS INGRESAR LOS CAMPOS OBLIGATORIOS DE LA DIRECCIÓN");
-      return;
-    }
-    let data = {
-      user: this.authEcommerce.authService.user._id,
-      name: this.name,
-      surname: this.surname,
-      address: this.address,
-      referencia: this.referencia,
-      region: this.region,
-      ciudad: this.ciudad,
-      telefono: this.telefono,
-      email: this.email,
-      nota: this.nota,
-      pais: this.pais,
-    };
-    this.authEcommerce.registerAddressClient(data).subscribe((resp:any) => {
+    this.authEcommerce.registerAddressClient(this.formGroup?.value).subscribe((resp:any) => {
       console.log(resp);
       this.listAdressClient.push(resp.address_client);
       alertSuccess(resp.message);
-      this.resetFormulario();
+      this.loadForm();
     })
   }
 
   updateAddress(){
-    if(!this.name ||
-      !this.surname
-      || !this.address
-      || !this.region
-      || !this.ciudad
-      || !this.telefono
-      || !this.email ||
-      !this.pais){
-      alertDanger("NECESITAS INGRESAR LOS CAMPOS OBLIGATORIOS DE LA DIRECCIÓN");
-      return;
-    }
-    let data = {
-      _id: this.address_client_selected._id,
-      user: this.authEcommerce.authService.user._id,
-      name: this.name,
-      surname: this.surname,
-      address: this.address,
-      referencia: this.referencia,
-      region: this.region,
-      ciudad: this.ciudad,
-      telefono: this.telefono,
-      email: this.email,
-      nota: this.nota,
-      pais: this.pais,
-    };
-    this.authEcommerce.updateAddressClient(data).subscribe((resp:any) => {
+    let data = this.formGroup?.value;
+    data._id = this.addressClientSelected?._id;
+    this.authEcommerce.updateAddressClient(data).subscribe((resp:AddressClientR) => {
       console.log(resp);
-      let INDEX = this.listAdressClient.findIndex((item:any) => item._id == this.address_client_selected._id);
+      let INDEX = this.listAdressClient.findIndex((item:any) => item._id == this.addressClientSelected?._id);
       this.listAdressClient[INDEX] = resp.address_client;
-      alertSuccess(resp.message);
+      if(resp.message){
+        alertSuccess(resp.message);
+      }
     })
   }
 
   resetFormulario(){
-    this.name = null;
-    this.surname = null;
-    this.address = null;
-    this.referencia = null;
-    this.region = null;
-    this.ciudad = null;
-    this.telefono = null;
-    this.email = null;
-    this.nota = null;
+    this.name = '';
+    this.surname = '';
+    this.address = '';
+    this.referencia = '';
+    this.region = '';
+    this.ciudad = '';
+    this.telefono = '';
+    this.email = '';
+    this.nota = '';
   }
   newAddress(){
-    this.resetFormulario();
-    this.address_client_selected = null;
+    this.loadForm();
+    this.addressClientSelected = undefined;
   }
-  addressClientSelected(list_address:any){
-    this.address_client_selected = list_address;
-    this.name = this.address_client_selected.name;
-    this.surname = this.address_client_selected.surname;
-    this.address = this.address_client_selected.address;
-    this.referencia = this.address_client_selected.referencia;
-    this.region = this.address_client_selected.region;
-    this.ciudad = this.address_client_selected.ciudad;
-    this.telefono = this.address_client_selected.telefono;
-    this.email = this.address_client_selected.email;
-    this.nota = this.address_client_selected.nota;
-    this.pais = this.address_client_selected.pais;
+  addressClientSelectedT(list_address:any){
+    this.addressClientSelected = list_address;
+
+    this.formGroup?.patchValue({
+      name: this.addressClientSelected?.name,
+      surname: this.addressClientSelected?.surname,
+      address: this.addressClientSelected?.address,
+      referencia: this.addressClientSelected?.referencia,
+      region: this.addressClientSelected?.region,
+      ciudad: this.addressClientSelected?.ciudad,
+      telefono: this.addressClientSelected?.telefono,
+      email: this.addressClientSelected?.email,
+      nota: this.addressClientSelected?.nota,
+      pais: this.addressClientSelected?.pais,
+    });
+  }
+
+  isControlValid(controlName: string): boolean {
+    const control = this.formGroup?.controls[controlName];
+    return (control?.valid && (control?.dirty || control?.touched)) ?? false;
+  }
+
+  isControlInvalid(controlName: string): boolean {
+    const control = this.formGroup?.controls[controlName];
+    return (control?.invalid && (control?.dirty || control?.touched)) ?? false;
+  }
+
+  controlHasError(validation:any, controlName:any): boolean {
+    const control = this.formGroup?.controls[controlName];
+    return (control?.hasError(validation) && (control?.dirty || control?.touched)) ?? false;
+  }
+
+  isControlTouched(controlName:any): boolean {
+    const control = this.formGroup?.controls[controlName];
+    return (control?.dirty || control?.touched) ?? false;
   }
 }

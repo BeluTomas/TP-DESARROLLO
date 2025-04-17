@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartService } from '../../ecommerce-guest/_services/cart.service';
+import { Cart } from 'src/app/config/interface';
 
 declare function sectionCart():any;
 declare function alertDanger([]):any;
@@ -16,7 +17,7 @@ export class ListCartsComponent implements OnInit {
 
   totalCarts:any = 0;
 
-  code_cupon:any = null;
+  codeCupon:string = '';
   constructor(
     public router: Router,
     public cartService: CartService,
@@ -29,10 +30,10 @@ export class ListCartsComponent implements OnInit {
     this.cartService.currentDataCart$.subscribe((resp:any) => {
       console.log(resp);
       this.listCarts = resp;
-      this.totalCarts = this.listCarts.reduce((sum:any,item:any) => sum + item.total, 0);
+      this.totalCarts = this.listCarts.reduce((sum:number,item:Cart) => sum + item.total, 0);
     })
   }
-  dec(cart:any){
+  dec(cart:Cart){
     if(cart.cantidad - 1 == 0){
       alertDanger("NO PUEDES DISMINUIR UN PRODUCTO A CERO");
       return;
@@ -42,8 +43,6 @@ export class ListCartsComponent implements OnInit {
     cart.subtotal = cart.price_unitario * cart.cantidad;
     cart.total = cart.price_unitario * cart.cantidad;
 
-    
-    // AQUI VA LA FUNCION PARA ENVIARLO AL SERVICIE O BACKEND
     console.log(cart,"DEC");
     let data = {
       _id: cart._id,
@@ -58,7 +57,7 @@ export class ListCartsComponent implements OnInit {
     })
   }
 
-  inc(cart:any) {
+  inc(cart:Cart) {
     console.log(cart,"INC");
 
     cart.cantidad = cart.cantidad + 1;
@@ -77,10 +76,9 @@ export class ListCartsComponent implements OnInit {
     this.cartService.updateCart(data).subscribe((resp:any) => {
       console.log(resp);
     })
-    // AQUI VA LA FUNCION PARA ENVIARLO AL SERVICIE O BACKEND
   }
 
-  removeCart(cart:any){
+  removeCart(cart:Cart){
     this.cartService.deleteCart(cart._id).subscribe((resp:any) =>{
       console.log(resp);
       this.cartService.removeItemCart(cart);
@@ -89,7 +87,7 @@ export class ListCartsComponent implements OnInit {
 
   aplicarCupon(){
     let data = {
-      code: this.code_cupon,
+      code: this.codeCupon,
       user_id: this.cartService._authService.user._id,
     }
     this.cartService.aplicarCupon(data).subscribe((resp:any) => {

@@ -18,42 +18,163 @@
           <div class="spinner spinner-lg spinner-success"></div>
         </div>
       </ng-container> -->
+      <form action="#" class="form form-label-right" [formGroup]="formGroup">
+        <div class="row">
+          <div class="col-6">
+              <div class="form-group">
+                  <label>Nombre completo: <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" placeholder="" 
+                  [class.is-invalid]="isControlInvalid('name')"
+                  [class.is-valid]="isControlValid('name')"
+                  formControlName="name"
+                  name="name">
+                  <span class="form-text text-muted">Ingresa tus nombres completos.</span>
+  
+                  <div class="valid-feedback" *ngIf="isControlValid('name')">
+                      El nombre se ingresó correctamente
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('required', 'name')"
+                  >
+                    Se requiere El nombre
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('minlength', 'name')"
+                  >
+                    El nombre debe tener al menos 3 letras
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('maxlength', 'name')"
+                  >
+                    El nombre debe tener un máximo de 250 letras
+                  </div>
+              </div>
+          </div>
+          <div class="col-6">
+              <div class="form-group">
+                  <label>Apellido completo: <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" placeholder="" 
+                  [class.is-invalid]="isControlInvalid('surname')"
+                  [class.is-valid]="isControlValid('surname')"
+                  formControlName="surname"
+                  name="surname">
+                  <span class="form-text text-muted">Ingresa tus apellidos completos.</span>
+  
+                  <div class="valid-feedback" *ngIf="isControlValid('surname')">
+                      El apellido se ingresó correctamente
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('required', 'surname')"
+                  >
+                    Se requiere El apellido
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('minlength', 'surname')"
+                  >
+                    El apellido debe tener al menos 3 letras
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('maxlength', 'surname')"
+                  >
+                    El apellido debe tener un máximo de 250 letras
+                  </div>
+              </div>
+          </div>
+          <div class="col-12">
+              <div class="form-group">
+                  <label>Dirección de correo: <span class="text-danger">*</span></label>
+                  <input type="email" class="form-control" placeholder="" 
+                    [class.is-invalid]="isControlInvalid('email')"
+                    [class.is-valid]="isControlValid('email')"
+                    formControlName="email"
+                  name="email">
+                  <span class="form-text text-muted">Ingresa tus email.</span>
+  
+                  <div class="valid-feedback" *ngIf="isControlValid('email')">
+                      El correo electrónico se ingresó correctamente
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('required', 'email')"
+                  >
+                      Correo electronico es requerido
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('email', 'email')"
+                  >
+                      El formato de correo electrónico es incorrecto
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('maxLength', 'email')"
+                  >
+                      El correo debe tener un máximo de 250 letras
+                  </div>
+  
+              </div>
+          </div>
+          <div class="col-6">
+              <div class="form-group">
+                  <label for="">Contraseña: <span class="text-danger">*</span></label>
+                  <input type="password" class="form-control" id="" placeholder="******" 
+                  [class.is-invalid]="isControlInvalid('password')"
+                  [class.is-valid]="isControlValid('password')"
+                  formControlName="password"
+                  name="password">
+  
+                  <div class="valid-feedback" *ngIf="isControlValid('password')">
+                      La contraseña se ingresó correctamente
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('required', 'password')"
+                  >
+                    Se requiere La contraseña
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('minlength', 'password')"
+                  >
+                    La contraseña debe tener al menos 6 letras
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('maxlength', 'password')"
+                  >
+                    La contraseña debe tener un máximo de 250 letras
+                  </div>
+              </div>
+          </div>
+          <div class="col-6">
+              <div class="form-group">
+                  <label for="">Repetir Contraseña <span class="text-danger">*</span></label>
+                  <input type="password" class="form-control" id="" placeholder="******" 
+                  [class.is-invalid]="isControlInvalid('repetPassword')"
+                  [class.is-valid]="isControlValid('repetPassword')"
+                  formControlName="repetPassword"
+                  name="repetPassword">
 
-      <div class="row">
-        <div class="col-6">
-            <div class="form-group">
-                <label>Nombre completo: <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" placeholder="" [(ngModel)]="name" name="name">
-                <span class="form-text text-muted">Ingresa tus nombres completos.</span>
-            </div>
+                  <div class="valid-feedback" *ngIf="isControlValid('repetPassword')">
+                      La contraseña se ingresó correctamente
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="controlHasError('required', 'repetPassword')"
+                  >
+                    Se requiere La contraseña
+                  </div>
+
+              </div>
+          </div>
         </div>
-        <div class="col-6">
-            <div class="form-group">
-                <label>Apellido completo: <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" placeholder="" [(ngModel)]="surname" name="surname">
-                <span class="form-text text-muted">Ingresa tus apellidos completos.</span>
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="form-group">
-                <label>Dirección de correo: <span class="text-danger">*</span></label>
-                <input type="email" class="form-control" placeholder="" [(ngModel)]="email" name="email">
-                <span class="form-text text-muted">Ingresa tus email.</span>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <label for="">Contraseña: <span class="text-danger">*</span></label>
-                <input type="password" class="form-control" id="" placeholder="******" [(ngModel)]="password" name="password">
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <label for="">Repetir Contraseña <span class="text-danger">*</span></label>
-                <input type="password" class="form-control" id="" placeholder="******" [(ngModel)]="repet_password" name="repet_password">
-            </div>
-        </div>
-      </div>
+      </form>
 </div>
     <div class="modal-footer">
 
@@ -61,9 +182,12 @@
         type="button"
         class="btn btn-primary btn-elevate mr-2"
         (click)="save()"
+        *ngIf="!isLoading"
+        [disabled]="formGroup.invalid"
       >
         Guardar
       </button>
+      <span *ngIf="isLoading" class="spinner spinner-primary mx-5"></span>
 
       <button
         type="button"

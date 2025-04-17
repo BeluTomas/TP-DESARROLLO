@@ -24,21 +24,73 @@
         </div>
         <div class="col-lg-6 offset-xl-2">
             <div class="axil-signin-form-wrap">
-                <div class="axil-signin-form">
+                <div class="axil-signin-form" *ngIf="formGroup">
                     <h3 class="title">Inicia sesión en eTrade.</h3>
                     <p class="b2 mb--55">Ingresa tus datos a continuación</p>
-                    <form class="singin-form">
+                    <form class="singin-form" [formGroup]="formGroup">
                         <div class="form-group">
                             <label>Correo electrónico</label>
-                            <input type="email" class="form-control" [(ngModel)]="email" name="email">
+                            <input type="email" class="form-control" 
+                            [class.is-invalid]="isControlInvalid('email')"
+                            [class.is-valid]="isControlValid('email')"
+                            formControlName="email"
+                            name="email">
+
+                            <div class="valid-feedback" *ngIf="isControlValid('email')">
+                                El correo electrónico se ingresó correctamente
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError('required', 'email')"
+                            >
+                                Correo electronico es requerido
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError('email', 'email')"
+                            >
+                                El formato de correo electrónico es incorrecto
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError('maxLength', 'email')"
+                            >
+                                El correo debe tener un máximo de 250 letras
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Contraseña</label>
-                            <input type="password" class="form-control" [(ngModel)]="password" name="password">
+                            <input type="password" class="form-control" 
+                            [class.is-invalid]="isControlInvalid('password')"
+                            [class.is-valid]="isControlValid('password')"
+                            formControlName="password"
+                            name="password">
+
+                            <div class="valid-feedback" *ngIf="isControlValid('password')">
+                                La contraseña se ingresó correctamente
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError('required', 'password')"
+                            >
+                              Se requiere La contraseña
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError('minlength', 'password')"
+                            >
+                              La contraseña debe tener al menos 6 letras
+                            </div>
+                            <div
+                              class="invalid-feedback"
+                              *ngIf="controlHasError('maxlength', 'password')"
+                            >
+                              La contraseña debe tener un máximo de 250 letras
+                            </div>
                         </div>
                         <div class="form-group d-flex align-items-center justify-content-between">
                             <button type="submit" class="axil-btn btn-bg-primary submit-btn"
-                                (click)="login()">INGRESAR</button>
+                                (click)="login()" [disabled]="formGroup.invalid">INGRESAR</button>
                             
                         </div>
                     </form>

@@ -4,6 +4,8 @@ import { AddUsersComponent } from '../components/add-users/add-users.component';
 import { DeleteUserComponent } from '../components/delete-user/delete-user.component';
 import { EditUsersComponent } from '../components/edit-users/edit-users.component';
 import { UsersService } from '../_services/users.service';
+import { User, UserL } from '../interface/user.interface';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-users-list',
@@ -12,10 +14,10 @@ import { UsersService } from '../_services/users.service';
 })
 export class UsersListComponent implements OnInit {
 
-  users:any = [];
+  users:User[] = [];
 
-  isLoading$:any;
-  search:any = "";
+  isLoading$:Observable<boolean>;
+  search:string = "";
   constructor(
     public _userService:UsersService,
     public modalService: NgbModal,
@@ -26,7 +28,7 @@ export class UsersListComponent implements OnInit {
     this.allUsers();
   }
   allUsers(){
-    this._userService.allUsers(this.search).subscribe((resp:any) => {
+    this._userService.allUsers(this.search).subscribe((resp:UserL) => {
       console.log(resp);
       this.users = resp.users;
     })
@@ -44,7 +46,7 @@ export class UsersListComponent implements OnInit {
 
       }
     );
-    modalRef.componentInstance.UserC.subscribe((resp:any) => {
+    modalRef.componentInstance.UserC.subscribe((resp:User) => {
       console.log(resp);
       this.users.unshift(resp);
     })
@@ -60,7 +62,7 @@ export class UsersListComponent implements OnInit {
 
       }
     );
-    modalRef.componentInstance.UserE.subscribe((resp:any) => {
+    modalRef.componentInstance.UserE.subscribe((resp:User) => {
       console.log(resp);
       let INDEX = this.users.findIndex(item => item._id == resp._id);
       if(INDEX != -1){
@@ -78,7 +80,7 @@ export class UsersListComponent implements OnInit {
 
       }
     );
-    modalRef.componentInstance.UserD.subscribe((resp:any) => {
+    modalRef.componentInstance.UserD.subscribe((resp:string) => {
       console.log(resp);
       let INDEX = this.users.findIndex(item => item._id == user._id);
       if(INDEX != -1){

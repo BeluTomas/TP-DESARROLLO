@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+
 .notification-ecommerce {
     position: fixed;
     left: 70%;
@@ -50,4 +50,11 @@
 
 .start-del{
   color: #6e6e6e !important;
+}
+
+button:disabled,
+button[disabled]{
+    border: 1px solid #ffe1dd !important;
+    background-color: #ffe1dd !important;
+    color: #ff0f0f !important;
 }

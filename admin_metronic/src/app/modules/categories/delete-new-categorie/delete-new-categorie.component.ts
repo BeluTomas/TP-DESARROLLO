@@ -12,7 +12,7 @@ import { CategoriesService } from '../_services/categories.service';
 export class DeleteNewCategorieComponent implements OnInit {
 
   @Output() CategorieD: EventEmitter<any> = new EventEmitter();
-  @Input() categorie_selected:any;
+  @Input() categorieSelected:any;
 
   constructor(
     public modal: NgbActiveModal,
@@ -25,7 +25,7 @@ export class DeleteNewCategorieComponent implements OnInit {
 
 
   delete(){
-    this.categorieService.deleteCategorie(this.categorie_selected._id).subscribe((resp:any) => {
+    this.categorieService.deleteCategorie(this.categorieSelected._id).subscribe((resp:any) => {
       console.log(resp);
       this.CategorieD.emit("");
       this.toaster.open(NoticyAlertComponent,{text:`success-'LA CATEGORIA  SE ELIMINO CORRECTAMENTE.'`});

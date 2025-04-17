@@ -3,6 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Toaster } from 'ngx-toast-notifications';
 import { NoticyAlertComponent } from 'src/app/componets/notifications/noticy-alert/noticy-alert.component';
 import { UsersService } from '../../_services/users.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-users',
@@ -12,46 +13,121 @@ import { UsersService } from '../../_services/users.service';
 export class AddUsersComponent implements OnInit {
 
   @Output() UserC: EventEmitter<any> = new EventEmitter();
-  name:any = null;
-  surname:any = null;
-  email:any = null;
-  password:any = null;
-  repet_password:any = null;
+  name:string = null;
+  surname:string = null;
+  email:string = null;
+  password:string = null;
+  repetPassword:string = null;
+
+  formGroup: FormGroup;
+  isLoading:Boolean = false;
+
   constructor(
     public modal: NgbActiveModal,
     public userService: UsersService,
+    private fb: FormBuilder,
     public toaster: Toaster,
   ) { }
 
   ngOnInit(): void {
+    this.loadForm();
+  }
+
+  loadForm() {
+    this.formGroup = this.fb.group({
+      name: [null, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(250),
+        ])
+      ],
+      surname: [null,
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(250),
+        ])
+      ],
+      email: [null,
+        Validators.compose([
+          Validators.required,
+          Validators.email,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(250),
+        ])
+      ],
+      password: [null,
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(6),
+          Validators.min(6),
+          Validators.maxLength(250),
+        ])
+      ],
+      repetPassword: [null,
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(6),
+          Validators.min(6),
+          Validators.maxLength(250),
+        ])
+      ],
+    });
   }
 
   save(){
-    if(!this.name || !this.surname || !this.email || !this.password || !this.repet_password){
-      // TODOS LO CAMPOS SON OBLIGATORIOS
-      this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! Necesita ingresar todos los campos.'`});
-      return;
-    }
-    if(this.password != this.repet_password){
-      this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! Necesita ingresar contraseñas iguales.'`});
-      return;
-    }
-    let data = {
-      name: this.name,
-      surname: this.surname,
-      email: this.email,
-      password: this.password,
-      repet_password: this.repet_password,
-    }
-    this.userService.createUser(data).subscribe((resp:any) => {
+    // if(!this.name || !this.surname || !this.email || !this.password || !this.repetPassword){
+      //   // TODOS LO CAMPOS SON OBLIGATORIOS
+      //   this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! Necesita ingresar todos los campos.'`});
+      //   return;
+      // }
+      if(this.formGroup.value.password != this.formGroup.value.repetPassword){
+        this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! Necesita ingresar contraseñas iguales.'`});
+        return;
+      }
+      // let data = {
+      //   name: this.name,
+      //   surname: this.surname,
+      //   email: this.email,
+      //   password: this.password,
+      //   repetPassword: this.repetPassword,
+    // }
+    this.isLoading = true;
+    this.userService.createUser(this.formGroup.value).subscribe((resp:any) => {
       console.log(resp);
+      this.isLoading = false;
       this.UserC.emit(resp.user);
       this.toaster.open(NoticyAlertComponent,{text:`success-'EL USUARIO SE REGISTRO CORRECTAMENTE.'`});
       this.modal.close();
     }, (error) => {
+      this.isLoading = false;
       if(error.error){
         this.toaster.open(NoticyAlertComponent,{text:`danger-'${error.error.message}'`});
       }
     })
+  }
+
+  isControlValid(controlName: string): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.valid && (control.dirty || control.touched);
+  }
+
+  isControlInvalid(controlName: string): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.invalid && (control.dirty || control.touched);
+  }
+
+  controlHasError(validation, controlName): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.hasError(validation) && (control.dirty || control.touched);
+  }
+
+  isControlTouched(controlName): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.dirty || control.touched;
   }
 }

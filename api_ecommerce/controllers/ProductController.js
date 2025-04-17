@@ -33,6 +33,7 @@ export default {
             });
 
         } catch (error) {
+            console.log(error);
             res.status(500).send({
                 message: "COURRIO UN PROBLEMA"
             });
@@ -67,6 +68,7 @@ export default {
             });
 
         } catch (error) {
+            console.log(error);
             res.status(500).send({
                 message: "COURRIO UN PROBLEMA"
             });
@@ -169,11 +171,12 @@ export default {
             res.status(200).json({
                 message: "LA IMAGEN SE SUBIO CORRECTAMENTE",
                 imagen: {
-                    imagen: process.env.URL_BACKEND+'/api/products/uploads/product/'+imagen_name,
+                    imagen: process.env.urlBackend+'/api/products/uploads/product/'+imagen_name,
                     _id: req.body.__id
                 }
             })
         } catch (error) {
+            console.log(error);
             res.status(500).send({
                 message: "OCURRIO UN PROBLEMA"
             });

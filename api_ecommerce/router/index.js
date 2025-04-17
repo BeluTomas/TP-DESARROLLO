@@ -16,9 +16,9 @@ import Review from './Review';
 const router = routerx();
 
 router.use('/users', User);
-router.use('/categories', auth.verifyEcommerce, Categorie);
-router.use('/products', auth.verifyEcommerce, Product);
-router.use('/sliders', auth.verifyEcommerce, Slider);
+router.use('/categories', Categorie);
+router.use('/products',Product);
+router.use('/sliders', Slider);
 router.use('/cupones', auth.verifyEcommerce, Cupone);
 router.use('/discount', auth.verifyEcommerce, Discount);
 router.use('/home', Home); 

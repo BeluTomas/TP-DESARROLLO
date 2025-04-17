@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HomeService } from './_services/home.service';
 import { CartService } from '../ecommerce-guest/_services/cart.service';
 import { Router } from '@angular/router';
+import { Categorie, Discount, HomeData, Product, Slider } from 'src/app/config/interface';
 
 declare var $:any;
 declare function HOMEINITTEMPLATE([]):any;
@@ -15,13 +16,13 @@ declare function alertSuccess([]):any;
 })
 export class HomeComponent implements OnInit {
 
-  sliders:any = [];
-  categories:any = [];
-  bestProducts:any=[];
-  our_products:any = [];
-  product_selected:any = null;
-  FlashSale:any = null;
-  FlashProductList:any = [];
+  sliders:Slider[] = [];
+  categories:Categorie[] = [];
+  bestProducts:Product[]=[];
+  ourProducts:Product[] = [];
+  productSelected:Product | undefined;
+  flashSale:Discount | undefined;
+  flashProductList:Product[] = [];
   constructor(
     public homeService: HomeService,
     public cartService: CartService,
@@ -31,18 +32,18 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
 
     let TIME_NOW = new Date().getTime();
-    this.homeService.listHome(TIME_NOW).subscribe((resp:any) => {
+    this.homeService.listHome(TIME_NOW).subscribe((resp:HomeData) => {
       console.log(resp,"1");
       this.sliders =resp.sliders;
       this.categories = resp.categories;
       this.bestProducts = resp.best_products;
-      this.our_products = resp.our_products;
-      this.FlashSale = resp.FlashSale;
-      this.FlashProductList = resp.campaign_products;
+      this.ourProducts = resp.our_products;
+      this.flashSale = resp.FlashSale;
+      this.flashProductList = resp.campaign_products;
       setTimeout(() => {
-        if(this.FlashSale){
+        if(this.flashSale){
           var eventCounter = $(".sale-countdown");
-          let PARSE_DATE = new Date(this.FlashSale.end_date);
+          let PARSE_DATE = new Date(this.flashSale.end_date);
           // console.log(PARSE_DATE.getMonth(),PARSE_DATE.getDate());
           let DATE = PARSE_DATE.getFullYear() + "/"+ (PARSE_DATE.getMonth()+1) + "/" + (PARSE_DATE.getDate()+1);
             if (eventCounter.length) {
@@ -62,12 +63,12 @@ export class HomeComponent implements OnInit {
 
   }
 
-  OpenModal(bestProd:any,FlashSale:any = null){
-    this.product_selected = null;
+  OpenModal(bestProd:Product,FlashSale:Discount | undefined = undefined){
+    this.productSelected = undefined;
 
     setTimeout(() => {
-      this.product_selected = bestProd;
-      this.product_selected.FlashSale = FlashSale;
+      this.productSelected = bestProd;
+      this.productSelected.FlashSale = FlashSale;
       setTimeout(() => {
         ModalProductDetail();
       }, 50);
@@ -75,27 +76,32 @@ export class HomeComponent implements OnInit {
 
   }
 
-  getCalNewPrice(product:any){
-    if(this.FlashSale.type_discount == 1){
-      return product.price_usd - product.price_usd*this.FlashSale.discount*0.01;
-    }else{
-      return product.price_usd - this.FlashSale.discount;
+  getCalNewPrice(product:Product){
+    if(this.flashSale){
+      if(this.flashSale.type_discount == 1){
+        return product.price_usd - product.price_usd*this.flashSale.discount*0.01;
+      }else{
+        return product.price_usd - this.flashSale.discount;
+      }
     }
+    return product.price_usd - 0;
   }
 
-  getDiscountProduct(bestProd:any,is_sale_flash=null){
-    if(is_sale_flash){
-      if(this.FlashSale.type_discount == 1){// 1 es porcentaje
-        return bestProd.price_usd*this.FlashSale.discount*0.01;
-      }else{// 2 es moneda
-        return this.FlashSale.discount;
-      }
-    }else{
-      if(bestProd.campaing_discount){
-        if(bestProd.campaing_discount.type_discount == 1){// 1 es porcentaje
-          return bestProd.price_usd*bestProd.campaing_discount.discount*0.01;
+  getDiscountProduct(bestProd:Product,is_sale_flash=null){
+    if(this.flashSale){
+      if(is_sale_flash){
+        if(this.flashSale.type_discount == 1){// 1 es porcentaje
+          return bestProd.price_usd*this.flashSale.discount*0.01;
         }else{// 2 es moneda
-          return bestProd.campaing_discount.discount;
+          return this.flashSale.discount;
+        }
+      }else{
+        if(bestProd.campaing_discount){
+          if(bestProd.campaing_discount.type_discount == 1){// 1 es porcentaje
+            return bestProd.price_usd*bestProd.campaing_discount.discount*0.01;
+          }else{// 2 es moneda
+            return bestProd.campaing_discount.discount;
+          }
         }
       }
     }
@@ -122,7 +128,7 @@ export class HomeComponent implements OnInit {
     if(product.type_inventario == 2){
       let LINK_DISCOUNT = "";
       if(is_sale_flash){
-        LINK_DISCOUNT = "?_id="+this.FlashSale._id;
+        LINK_DISCOUNT = "?_id="+this.flashSale?._id;
       }else{
         if(product.campaing_discount){
           LINK_DISCOUNT = "?_id="+product.campaing_discount._id;
@@ -134,9 +140,9 @@ export class HomeComponent implements OnInit {
     let discount = 0;
     let code_discount = null;
     if(is_sale_flash){
-      type_discount = this.FlashSale.type_discount;
-      discount = this.FlashSale.discount;
-      code_discount = this.FlashSale._id;
+      type_discount = this.flashSale?.type_discount;
+      discount = this.flashSale?.discount ?? 0;
+      code_discount = this.flashSale?._id;
     }else{
       if(product.campaing_discount){
         type_discount = product.campaing_discount.type_discount;

@@ -12,7 +12,7 @@ import { CuponeService } from '../_services/cupone.service';
 export class DeleteNewCuponeComponent implements OnInit {
 
   @Output() CuponD: EventEmitter<any> = new EventEmitter();
-  @Input() cupon_selected:any;
+  @Input() cuponSelected:any;
 
   constructor(
     public modal: NgbActiveModal,
@@ -25,7 +25,7 @@ export class DeleteNewCuponeComponent implements OnInit {
 
 
   delete(){
-    this.cuponeService.deleteCupone(this.cupon_selected._id).subscribe((resp:any) => {
+    this.cuponeService.deleteCupone(this.cuponSelected._id).subscribe((resp:any) => {
       console.log(resp);
       this.CuponD.emit("");
       this.toaster.open(NoticyAlertComponent,{text:`success-'EL CUPON  SE ELIMINO CORRECTAMENTE.'`});

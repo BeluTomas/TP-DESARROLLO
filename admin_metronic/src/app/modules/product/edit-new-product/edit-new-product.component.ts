@@ -8,6 +8,10 @@ import { DeleteGaleriaImagenComponent } from '../delete-galeria-imagen/delete-ga
 import { DeleteNewVariedadComponent } from '../variedades/delete-new-variedad/delete-new-variedad.component';
 import { EditNewVariedadComponent } from '../variedades/edit-new-variedad/edit-new-variedad.component';
 import { ProductService } from '../_services/product.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Categorie } from '../../categories/interface/categorie.interface';
+import { Observable } from 'rxjs';
+import { Product, ProductR } from '../interface/product.interface';
 
 @Component({
   selector: 'app-edit-new-product',
@@ -16,43 +20,48 @@ import { ProductService } from '../_services/product.service';
 })
 export class EditNewProductComponent implements OnInit {
 
-  product_id:any = null;
-  product_selected:any = null;
+  product_id:string = null;
+  productSelected:Product;
 
-  title:any = null;
-  sku:any = null;
-  categories:any = [];
-  categorie:any = "";
-  price_pesos:any = 0;  
-  price_usd:any = 0;  
-  imagen_file:any= null;
-  imagen_previzualizacion:any = null;
-  resumen:any = null;
-  description:any = null;
-  state:any = 1;
+  title:string = null;
+  sku:string = null;
+  categories:Categorie[] = [];
+  categorie:string = "";
+  price_pesos:number = 0;  
+  price_usd:number = 0;  
+  imagenFile: File = null;
+  imagenPrevizualizacion: string | ArrayBuffer = null;
+  resumen:string = null;
+  description:string = null;
+  state:string = "1";
   // 
-  tag:any = null;
-  tags:any = [];
+  tag:string = null;
+  tags:string[] = [];
 
-  isLoading$:any;
-  type_inventario:any = 1;
-  stock:any = 0;
+  isLoading$:Observable<boolean>;
+  typeInventario:number = 1;
+  stock:number = 0;
 
-  stock_multiple:any = 0;
-  valor_multiple:any = "";
+  stock_multiple:number = 0;
+  valor_multiple:string = "";
 
-  variedades:any = [];
+  variedades = [];
 
-  imagen_previz_galeria:any = null;
-  imagen_file_galeria:any = null;
-  galerias:any = [];
+  imagenPrevizGaleria: string | ArrayBuffer = null;
+  imagenFileGaleria: File = null;
+  galerias = [];
+
+  formGroup: FormGroup;
+  isLoading:Boolean = false;
+
   constructor(
     public _productService:ProductService,
     public router:Router,
     public _categorieService:CategoriesService,
     public activeRouter:ActivatedRoute,
     public toaster: Toaster,
-    public modalService: NgbModal
+    public modalService: NgbModal,
+     private fb: FormBuilder,
   ) { }
 
   ngOnInit(): void {
@@ -61,27 +70,30 @@ export class EditNewProductComponent implements OnInit {
       console.log(resp);
       this.product_id = resp.id;
     });
-
-    this._productService.showProduct(this.product_id).subscribe((resp:any) => {
+    // this.loadForm();
+    this._productService.showProduct(this.product_id).subscribe((resp:ProductR) => {
       console.log(resp);
-      this.product_selected = resp.product;
+      this.productSelected = resp.product;
 
-      this.title = this.product_selected.title;
-      this.sku = this.product_selected.sku;
-      this.categorie = this.product_selected.categorie._id;
-      this.price_pesos = this.product_selected.price_pesos;
-      this.price_usd = this.product_selected.price_usd;
+      // this.title = this.productSelected.title;
+      // this.sku = this.productSelected.sku;
+      // this.categorie = this.productSelected.categorie._id;
+      // this.price_pesos = this.productSelected.price_pesos;
+      // this.price_usd = this.productSelected.price_usd;
       
-      this.stock = this.product_selected.stock;
+      this.stock = this.productSelected.stock;
 
-      this.imagen_previzualizacion = this.product_selected.imagen;
-      this.resumen = this.product_selected.resumen;
-      this.description = this.product_selected.description;
-      this.tags = this.product_selected.tags;
-      this.variedades = this.product_selected.variedades;
-      this.type_inventario = this.product_selected.type_inventario;
-      this.state = this.product_selected.state;
-      this.galerias = this.product_selected.galerias;
+      this.imagenPrevizualizacion = this.productSelected.imagen;
+      // this.resumen = this.productSelected.resumen;
+      // this.description = this.productSelected.description;
+      this.tags = this.productSelected.tags;
+      this.variedades = this.productSelected.variedades;
+      this.typeInventario = this.productSelected.type_inventario;
+      // this.state = this.productSelected.state;
+      this.galerias = this.productSelected.galerias;
+      setTimeout(() => {
+        this.loadForm();
+      }, 25);
     })
 
     this._categorieService.allCategories().subscribe((resp:any) => {
@@ -89,6 +101,63 @@ export class EditNewProductComponent implements OnInit {
       this.categories = resp.categories;
       this.loadServices();
     })
+  }
+
+  loadForm() {
+    this.formGroup = this.fb.group({
+      title: [this.productSelected.title, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(3),
+          Validators.min(3),
+          Validators.maxLength(250),
+        ])
+      ],
+      sku: [this.productSelected.sku, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+          Validators.maxLength(250),
+        ])
+      ],
+      categorie: [this.productSelected.categorie._id, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+        ])
+      ],
+      pricePesos: [this.productSelected.price_pesos, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+        ])
+      ],
+      priceUsd: [this.productSelected.price_usd, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+        ])
+      ],
+      resumen: [this.productSelected.resumen, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+        ])
+      ],
+      description: [this.productSelected.description, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(1),
+          Validators.min(1),
+        ])
+      ],
+      state: [this.productSelected.state],
+    });
   }
 
   loadServices(){
@@ -100,27 +169,27 @@ export class EditNewProductComponent implements OnInit {
 
   processFile($event){
     if($event.target.files[0].type.indexOf("image") < 0){
-      this.imagen_previzualizacion = null;
+      this.imagenPrevizualizacion = null;
       this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! Necesita ingresar un archivo de tipo imagen.'`});
       return;
     }
-    this.imagen_file = $event.target.files[0];
+    this.imagenFile = $event.target.files[0];
     let reader = new FileReader();
-    reader.readAsDataURL(this.imagen_file);
-    reader.onloadend = () => this.imagen_previzualizacion = reader.result;
+    reader.readAsDataURL(this.imagenFile);
+    reader.onloadend = () => this.imagenPrevizualizacion = reader.result;
     this.loadServices();
   }
 
   processFileGaleria($event){
     if($event.target.files[0].type.indexOf("image") < 0){
-      this.imagen_previz_galeria = null;
+      this.imagenPrevizGaleria = null;
       this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! Necesita ingresar un archivo de tipo imagen.'`});
       return;
     }
-    this.imagen_file_galeria = $event.target.files[0];
+    this.imagenFileGaleria = $event.target.files[0];
     let reader = new FileReader();
-    reader.readAsDataURL(this.imagen_file_galeria);
-    reader.onloadend = () => this.imagen_previz_galeria = reader.result;
+    reader.readAsDataURL(this.imagenFileGaleria);
+    reader.onloadend = () => this.imagenPrevizGaleria = reader.result;
     this.loadServices();
   }
 
@@ -133,26 +202,31 @@ export class EditNewProductComponent implements OnInit {
   }
 
   update(){
-    if(!this.title || !this.categorie || !this.price_pesos || !this.price_usd || !this.resumen || !this.description
-      || !this.sku || this.tags.length == 0){
-        this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! NECESITAS DIGITAR TODOS LOS CAMPOS DEL FORMULARIO.'`});
-        return;
+    // if(!this.title || !this.categorie || !this.price_pesos || !this.price_usd || !this.resumen || !this.description
+    //   || !this.sku || this.tags.length == 0){
+    //     this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! NECESITAS DIGITAR TODOS LOS CAMPOS DEL FORMULARIO.'`});
+    //     return;
+    // }
+
+    if(this.tags.length == 0){
+      this.toaster.open(NoticyAlertComponent,{text:`danger-'Upps! NECESITAS AGREGAR AL MENOS UNA TAG.'`});
+      return;
     }
     let formData = new FormData();
     formData.append("_id",this.product_id);
-    formData.append("title",this.title);
-    formData.append("categorie",this.categorie);
-    formData.append("sku",this.sku);
-    formData.append("price_pesos",this.price_pesos);
-    formData.append("price_usd",this.price_usd);
-    formData.append("description",this.description);
-    formData.append("resumen",this.resumen);
-    formData.append("state",this.state);
-    formData.append("type_inventario",this.type_inventario);
+    formData.append("title",this.formGroup.value.title);
+    formData.append("categorie",this.formGroup.value.categorie);
+    formData.append("sku",this.formGroup.value.sku);
+    formData.append("price_pesos",this.formGroup.value.pricePesos);
+    formData.append("price_usd",this.formGroup.value.priceUsd);
+    formData.append("description",this.formGroup.value.description);
+    formData.append("resumen",this.formGroup.value.resumen);
+    formData.append("state",this.formGroup.value.state);
+    formData.append("type_inventario",this.typeInventario+"");
     formData.append("tags",JSON.stringify(this.tags));
-    formData.append("stock",this.stock);
-    if(this.imagen_file){
-      formData.append("imagen",this.imagen_file);
+    formData.append("stock",this.stock+"");
+    if(this.imagenFile){
+      formData.append("imagen",this.imagenFile);
     }
 
     this._productService.updateProduct(formData).subscribe((resp:any) => {
@@ -173,7 +247,7 @@ export class EditNewProductComponent implements OnInit {
   }
 
   checkedInventario(value){
-    this.type_inventario = value;
+    this.typeInventario = value;
   }
 
   saveVariedad(){
@@ -229,18 +303,18 @@ export class EditNewProductComponent implements OnInit {
   }
 
   storeImagen(){
-    if(!this.imagen_file_galeria){
+    if(!this.imagenFileGaleria){
       this.toaster.open(NoticyAlertComponent,{text:`danger-'NECESITAS SELECCIONAR UNA IMAGEN'`});
       return;
     }
     let formData = new FormData();
     formData.append("_id",this.product_id);
-    formData.append("imagen",this.imagen_file_galeria);
+    formData.append("imagen",this.imagenFileGaleria);
     formData.append("__id",new Date().getTime().toString());
     this._productService.createGaleria(formData).subscribe((resp:any) => {
       console.log(resp);
-      this.imagen_file_galeria = null;
-      this.imagen_previz_galeria = null;
+      this.imagenFileGaleria = null;
+      this.imagenPrevizGaleria = null;
       this.galerias.unshift(resp.imagen);
     })
   }
@@ -257,5 +331,25 @@ export class EditNewProductComponent implements OnInit {
         this.toaster.open(NoticyAlertComponent,{text:`primary-'LA IMAGEN SE ELIMINO CORRECTAMENTE'`});
       }
     })
+  }
+
+  isControlValid(controlName: string): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.valid && (control.dirty || control.touched);
+  }
+
+  isControlInvalid(controlName: string): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.invalid && (control.dirty || control.touched);
+  }
+
+  controlHasError(validation, controlName): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.hasError(validation) && (control.dirty || control.touched);
+  }
+
+  isControlTouched(controlName): boolean {
+    const control = this.formGroup.controls[controlName];
+    return control.dirty || control.touched;
   }
 }

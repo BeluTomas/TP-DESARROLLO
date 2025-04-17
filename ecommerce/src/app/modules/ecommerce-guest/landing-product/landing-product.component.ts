@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CartService } from '../_services/cart.service';
 import { EcommerceGuestService } from '../_services/ecommerce-guest.service';
+import { Discount, Product, Variedad } from 'src/app/config/interface';
 
 declare var $:any;
 declare function LandingProductDetail():any;
@@ -16,18 +17,18 @@ declare function alertSuccess([]):any;
 })
 export class LandingProductComponent implements OnInit {
 
-  slug:any = null;
-  product_selected:any = null;
-  product_selected_modal:any = null;
-  related_products:any = [];
-  variedad_selected:any = null;
+  slug:string = '';
+  productSelected:Product | undefined;
+  productSelectedModal:Product | undefined;
+  relatedProducts:Product[] = [];
+  variedadSelected:Variedad | undefined;
 
-  discount_id:any;
-  SALE_FLASH:any = null;
+  discount_id:string = '';
+  SaleFlash:Discount | undefined;
 
-  REVIEWS:any;
-  AVG_REVIEW:any;
-  COUNT_REVIEW:any;
+  REVIEWS:any[] = [];
+  avgReview:number = 0;
+  countReview:number = 0;
   constructor(
     public ecommerce_guest: EcommerceGuestService,
     public router: Router,
@@ -37,32 +38,32 @@ export class LandingProductComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.ecommerce_guest._authService.user);
-    this.routerActived.params.subscribe((resp:any) => {
+    this.routerActived.params.subscribe((resp) => {
       this.slug = resp["slug"];
     })
-    this.routerActived.queryParams.subscribe((resp:any) => {
+    this.routerActived.queryParams.subscribe((resp) => {
       this.discount_id = resp["_id"];
     })
     console.log(this.slug);
     this.ecommerce_guest.showLandingProduct(this.slug,this.discount_id).subscribe((resp:any) => {
       console.log(resp);
-      this.product_selected = resp.product;
-      this.related_products = resp.related_products;
-      this.SALE_FLASH = resp.SALE_FLASH;
+      this.productSelected = resp.product;
+      this.relatedProducts = resp.related_products;
+      this.SaleFlash = resp.SALE_FLASH;
       this.REVIEWS = resp.REVIEWS;
-      this.AVG_REVIEW = resp.AVG_REVIEW;
-      this.COUNT_REVIEW = resp.COUNT_REVIEW;
+      this.avgReview = resp.AVG_REVIEW;
+      this.countReview = resp.COUNT_REVIEW;
       setTimeout(() => {
         LandingProductDetail();
       }, 50);
     })
   }
-  OpenModal(bestProd:any,FlashSale:any = null){
-    this.product_selected_modal = null;
+  OpenModal(bestProd:Product,FlashSale:Discount | undefined = undefined){
+    this.productSelectedModal = undefined;
 
     setTimeout(() => {
-      this.product_selected_modal = bestProd;
-      this.product_selected_modal.FlashSale = FlashSale;
+      this.productSelectedModal = bestProd;
+      this.productSelectedModal.FlashSale = FlashSale;
       setTimeout(() => {
         ModalProductDetail();
       }, 50);
@@ -71,25 +72,20 @@ export class LandingProductComponent implements OnInit {
   }
   getDiscount(){
     let discount = 0;
-    if(this.SALE_FLASH){
-      if(this.SALE_FLASH.type_discount == 1){
-        return this.SALE_FLASH.discount*this.product_selected.price_usd*0.01;
+    if(this.productSelected && this.SaleFlash){
+      if(this.SaleFlash.type_discount == 1){
+        return this.SaleFlash.discount*this.productSelected.price_usd*0.01;
       }else{
-        return this.SALE_FLASH.discount;
+        return this.SaleFlash.discount;
       }
     }
    return discount;
   }
   getCalNewPrice(product:any){
-    // if(this.FlashSale.type_discount == 1){
-    //   return product.price_usd - product.price_usd*this.FlashSale.discount*0.01;
-    // }else{
-    //   return product.price_usd - this.FlashSale.discount;
-    // }
     return 0;
   }
   selectedVariedad(variedad:any){
-    this.variedad_selected = variedad;
+    this.variedadSelected = variedad;
   }
   addCart(product:any) {
     console.log(product);
@@ -101,30 +97,33 @@ export class LandingProductComponent implements OnInit {
       alertDanger("NECESITAS AGREGAR UNA CANTIDAD MAYOR A 0  DEL PRODUCTO PARA EL CARRITO");
       return;
     }
-    if(this.product_selected.type_inventario == 2){
-      if(!this.variedad_selected){
+    if(this.productSelected && this.productSelected.type_inventario == 2){
+      if(!this.variedadSelected){
         alertDanger("NECESITAS SELECCIONAR UNA VARIEDAD PARA EL PRODUCTO");
         return;
       }
-      if(this.variedad_selected){
-        if(this.variedad_selected.stock < $("#qty-cart").val()){
+      if(this.variedadSelected){
+        if(this.variedadSelected.stock < $("#qty-cart").val()){
           alertDanger("NECESITAS AGREGAR UNA CANTIDAD MENOR PORQUE NO SE TIENE EL STOCK SUFICIENTE");
           return;
         }
       }
     }
+    if(!this.productSelected){
+      return;
+    }
     let data = {
       user: this.cartService._authService.user._id,
-      product: this.product_selected._id,
-      type_discount: this.SALE_FLASH ? this.SALE_FLASH.type_discount : null,
-      discount: this.SALE_FLASH ? this.SALE_FLASH.discount : 0,
+      product: this.productSelected._id,
+      type_discount: this.SaleFlash ? this.SaleFlash.type_discount : null,
+      discount: this.SaleFlash ? this.SaleFlash.discount : 0,
       cantidad:  $("#qty-cart").val(),
-      variedad: this.variedad_selected ? this.variedad_selected._id : null,
+      variedad: this.variedadSelected ? this.variedadSelected._id : null,
       code_cupon: null,
-      code_discount: this.SALE_FLASH ? this.SALE_FLASH._id : null,
-      price_unitario: this.product_selected.price_usd,
-      subtotal: this.product_selected.price_usd - this.getDiscount(),//*$("#qty-cart").val()
-      total: (this.product_selected.price_usd - this.getDiscount())*$("#qty-cart").val(),
+      code_discount: this.SaleFlash ? this.SaleFlash._id : null,
+      price_unitario: this.productSelected.price_usd,
+      subtotal: this.productSelected.price_usd - this.getDiscount(),//*$("#qty-cart").val()
+      total: (this.productSelected.price_usd - this.getDiscount())*$("#qty-cart").val(),
     }
     this.cartService.registerCart(data).subscribe((resp:any) => {
       if(resp.message == 403){

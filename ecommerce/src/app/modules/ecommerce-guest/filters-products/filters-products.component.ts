@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EcommerceGuestService } from '../_services/ecommerce-guest.service';
 import { CartService } from '../_services/cart.service';
 import { Router } from '@angular/router';
+import { Categorie, ConfiaAll, Product, Variedad } from 'src/app/config/interface';
 
 declare function priceRangeSlider():any;
 declare var $:any;
@@ -15,16 +16,14 @@ declare function ModalProductDetail():any;
 })
 export class FiltersProductsComponent implements OnInit {
 
-  categories:any = [];
-  variedades:any = [];
+  categories:Categorie[] = [];
+  variedades:Variedad[] = [];
 
-  categories_selecteds:any = [];
-  is_discount:any = 1; // 1 es normal y 2 es producto con descuento 
-  variedad_selected:any = {
-    _id: null,
-  };
-  products:any = [];
-  product_selected:any = null;
+  categoriesSelecteds:string[] = [];
+  isDiscount:number = 1; // 1 es normal y 2 es producto con descuento 
+  variedadSelected:Variedad | undefined;
+  products:Product[] = [];
+  productSelected:Product | undefined;
   constructor(
     public ecommerceGuest:EcommerceGuestService,
     public cartService: CartService,
@@ -32,7 +31,7 @@ export class FiltersProductsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.ecommerceGuest.configInitial().subscribe((resp:any) => {
+    this.ecommerceGuest.configInitial().subscribe((resp:ConfiaAll) => {
       console.log(resp);
       this.categories = resp.categories;
       this.variedades = resp.variedades;
@@ -60,28 +59,28 @@ export class FiltersProductsComponent implements OnInit {
   }
 
   addCategorie(categorie:any){
-    let index = this.categories_selecteds.findIndex((item:any) => item == categorie._id);
+    let index = this.categoriesSelecteds.findIndex((item:string) => item == categorie._id);
     if(index != -1){
-      this.categories_selecteds.splice(index,1);
+      this.categoriesSelecteds.splice(index,1);
     }else{
-      this.categories_selecteds.push(categorie._id);
+      this.categoriesSelecteds.push(categorie._id);
     }
     this.filterProduct();
   }
   selectedDiscount(value:number){
-    this.is_discount = value;
+    this.isDiscount = value;
     this.filterProduct();
   }
   selectedVariedad(variedad:any){
-    this.variedad_selected = variedad;
+    this.variedadSelected = variedad;
     this.filterProduct();
   }
 
   filterProduct(){
     let data = {
-      categories_selecteds: this.categories_selecteds,
-      is_discount: this.is_discount,
-      variedad_selected: this.variedad_selected._id ? this.variedad_selected : null,
+      categoriesSelecteds: this.categoriesSelecteds,
+      is_discount: this.isDiscount,
+      variedad_selected: this.variedadSelected && this.variedadSelected._id ? this.variedadSelected : null,
       price_min: $("#amount-min").val(),
       price_max: $("#amount-max").val(),
     }
@@ -158,11 +157,11 @@ export class FiltersProductsComponent implements OnInit {
     })
   }
 
-  OpenModal(product:any){
-    this.product_selected = null;
+  OpenModal(product:Product | undefined){
+    this.productSelected = undefined;
 
     setTimeout(() => {
-      this.product_selected = product;
+      this.productSelected = product;
       setTimeout(() => {
         ModalProductDetail();
       }, 50);
@@ -170,7 +169,7 @@ export class FiltersProductsComponent implements OnInit {
 
   }
 
-  getCalNewPrice(product:any){
+  getCalNewPrice(product:Product){
     if(product.campaing_discount){
       if(product.campaing_discount.type_discount == 1){
         return product.price_usd - product.price_usd*product.campaing_discount.discount*0.01;

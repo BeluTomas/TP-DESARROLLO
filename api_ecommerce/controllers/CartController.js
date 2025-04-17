@@ -60,11 +60,10 @@ export default {
                     product: data.product,
                 });
                 if (valid_cart) {
-                    res.status(200).json({
-                        message: 403,
-                        message_text: "EL PRODUCTO YA EXISTE EN EL CARRITO DE COMPRA",
+                     return res.status(409).json({ 
+                        message: "EL PRODUCTO YA EXISTE EN EL CARRITO DE COMPRA",
                     });
-                    return; // Termina la ejecución si el producto ya existe
+                    // return; // Termina la ejecución si el producto ya existe
                 }
             }
 
@@ -109,14 +108,34 @@ export default {
                 message_text: "EL CARRITO SE REGISTRO CON EXITO",
             })
         } catch (error) {
-            // Manejo de errores en caso de que ocurra un problema
-            res.status(500).send({
-                message: "OCURRIO UN ERROR",
-            });
-            console.log(error);
-        }
-    },
-    
+            console.error(error); // Primero, logueamos el error para depuración
+
+            // Verificamos si el error es conocido y ajustamos el código de respuesta
+            if (error.name === "ValidationError") {
+                return res.status(400).json({
+                   message: "Datos inválidos",
+                    details: error.message, // Puede ayudar a depuración
+                });
+            }
+
+            if (error.name === "UnauthorizedError") {
+                return res.status(401).json({
+                    message: "No autorizado",
+                });
+            }
+
+            if (error.name === "NotFoundError") {
+                return res.status(404).json({
+                    message: "Recurso no encontrado",
+                });
+            }
+            // Para cualquier otro error inesperado, mantenemos 500
+                return res.status(500).json({
+                    message: "Ocurrió un error inesperado",
+                });
+            }
+        },
+                
     // Método para actualizar un carrito de compra existente
     update: async (req, res) => {
         try {
@@ -220,8 +239,7 @@ export default {
             CUPON.categories.forEach((categorie) => {
                 categories.push(categorie._id);
             });
-            console.log(products);
-            console.log(categories);
+
             
             // Recorre los carritos para aplicar el cupón donde corresponda
             for (const cart of carts) {

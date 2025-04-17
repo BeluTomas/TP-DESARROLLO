@@ -12,7 +12,7 @@ import { SliderService } from '../_services/slider.service';
 export class DeleteNewSliderComponent implements OnInit {
 
   @Output() SliderD: EventEmitter<any> = new EventEmitter();
-  @Input() slider_selected:any;
+  @Input() sliderSelected:any;
 
   constructor(
     public modal: NgbActiveModal,
@@ -25,7 +25,7 @@ export class DeleteNewSliderComponent implements OnInit {
 
 
   delete(){
-    this.sliderService.deleteSlider(this.slider_selected._id).subscribe((resp:any) => {
+    this.sliderService.deleteSlider(this.sliderSelected._id).subscribe((resp:any) => {
       console.log(resp);
       this.SliderD.emit("");
       this.toaster.open(NoticyAlertComponent,{text:`success-'EL SLIDER  SE ELIMINO CORRECTAMENTE.'`});
