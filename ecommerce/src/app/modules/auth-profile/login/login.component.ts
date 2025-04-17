@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
           Validators.required,
           Validators.email,
           Validators.minLength(3),
-          Validators.maxLength(320), // https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
+          Validators.maxLength(320), 
         ]),
       ],
       password: [
@@ -51,20 +51,12 @@ export class LoginComponent implements OnInit {
   }
   
   login() {
-    // if (!this.email) {
-    //   alertDanger("ES NECESARIO INGRESAR EL EMAIL");
-    //   return;
-    // }
-
-    // if (!this.password) {
-    //   alertDanger("ES NECESARIO INGRESAR UNA CONTRASEÑA");
-    //   return;
-    // }
+  
 
     this.authService.login(this.formGroup?.value.email, this.formGroup?.value.password).subscribe({
       next: (resp: any) => {
         if (!resp.error) {
-          this.router.navigate(["/"]); // Redirigir en lugar de recargar la página
+          this.router.navigate(["/"]); 
         } else {
           alertDanger(resp.error.message);
         }

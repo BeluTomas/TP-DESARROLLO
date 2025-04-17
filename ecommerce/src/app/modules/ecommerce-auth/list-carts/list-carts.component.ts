@@ -43,8 +43,7 @@ export class ListCartsComponent implements OnInit {
     cart.subtotal = cart.price_unitario * cart.cantidad;
     cart.total = cart.price_unitario * cart.cantidad;
 
-    
-    // AQUI VA LA FUNCION PARA ENVIARLO AL SERVICIE O BACKEND
+
     console.log(cart,"DEC");
     let data = {
       _id: cart._id,
@@ -78,7 +77,6 @@ export class ListCartsComponent implements OnInit {
     this.cartService.updateCart(data).subscribe((resp:any) => {
       console.log(resp);
     })
-    // AQUI VA LA FUNCION PARA ENVIARLO AL SERVICIE O BACKEND
   }
 
   removeCart(cart:Cart){
@@ -111,7 +109,6 @@ export class ListCartsComponent implements OnInit {
     if(this.cartService._authService.user){
       this.cartService.lisCarts(this.cartService._authService.user._id).subscribe((resp:any) => {
         console.log(resp);
-        // this.listCarts = resp.carts;
         resp.carts.forEach((cart:any) => {
           this.cartService.changeCart(cart);
         });

@@ -55,17 +55,14 @@ export class CheckoutComponent implements OnInit {
     })
 
     paypal.Buttons({
-      // optional styling for buttons
-      // https://developer.paypal.com/docs/checkout/standard/customize/buttons-style-guide/
       style: {
         color: "gold",
         shape: "rect",
         layout: "vertical"
       },
-      // set up the transaction
+     
       createOrder: (data:any, actions:any) => {
-          // pass in any options from the v2 orders create call:
-          // https://developer.paypal.com/api/orders/v2/#orders-create-req-body
+          
           if(this.listCarts.length == 0){
             alertDanger("NO SE PUEDE PROCESAR UNA ORDEN SIN NINGUN ELEMENTO DENTRO DEL CARRITO");
             return;
@@ -88,12 +85,10 @@ export class CheckoutComponent implements OnInit {
           return actions.order.create(createOrderPayload);
       },
 
-      // finalize the transaction
       onApprove: async (data:any, actions:any) => {
           
           let Order = await actions.order.capture();
   
-          // Order.purchase_units[0].payments.captures[0].id
 
           let sale = {
             user: this.authEcommerce.authService.user._id,
@@ -121,10 +116,8 @@ export class CheckoutComponent implements OnInit {
             alertSuccess(resp.message);
             location.reload();
           })
-          // return actions.order.capture().then(captureOrderHandler);
       },
 
-      // handle unrecoverable errors
       onError: (err:any) => {
           console.error('An error prevented the buyer from checking out with PayPal');
       }
@@ -213,30 +206,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   registerAddress(){
-    // if(!this.name ||
-    //   !this.surname
-    //   || !this.address
-    //   || !this.region
-    //   || !this.ciudad
-    //   || !this.telefono
-    //   || !this.email ||
-    //   !this.pais){
-    //   alertDanger("NECESITAS INGRESAR LOS CAMPOS OBLIGATORIOS DE LA DIRECCIÓN");
-    //   return;
-    // }
-    // let data = {
-    //   user: this.authEcommerce.authService.user._id,
-    //   name: this.name,
-    //   surname: this.surname,
-    //   address: this.address,
-    //   referencia: this.referencia,
-    //   region: this.region,
-    //   ciudad: this.ciudad,
-    //   telefono: this.telefono,
-    //   email: this.email,
-    //   nota: this.nota,
-    //   pais: this.pais,
-    // };
+  
     this.authEcommerce.registerAddressClient(this.formGroup?.value).subscribe((resp:any) => {
       console.log(resp);
       this.listAdressClient.push(resp.address_client);
@@ -246,31 +216,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   updateAddress(){
-    // if(!this.name ||
-    //   !this.surname
-    //   || !this.address
-    //   || !this.region
-    //   || !this.ciudad
-    //   || !this.telefono
-    //   || !this.email ||
-    //   !this.pais){
-    //   alertDanger("NECESITAS INGRESAR LOS CAMPOS OBLIGATORIOS DE LA DIRECCIÓN");
-    //   return;
-    // }
-    // let data = {
-    //   _id: this.addressClientSelected._id,
-    //   user: this.authEcommerce.authService.user._id,
-    //   name: this.name,
-    //   surname: this.surname,
-    //   address: this.address,
-    //   referencia: this.referencia,
-    //   region: this.region,
-    //   ciudad: this.ciudad,
-    //   telefono: this.telefono,
-    //   email: this.email,
-    //   nota: this.nota,
-    //   pais: this.pais,
-    // };
+   
     let data = this.formGroup?.value;
     data._id = this.addressClientSelected?._id;
     this.authEcommerce.updateAddressClient(data).subscribe((resp:AddressClientR) => {
@@ -295,22 +241,11 @@ export class CheckoutComponent implements OnInit {
     this.nota = '';
   }
   newAddress(){
-    // this.resetFormulario();
     this.loadForm();
     this.addressClientSelected = undefined;
   }
   addressClientSelectedT(list_address:any){
     this.addressClientSelected = list_address;
-    // this.name = this.addressClientSelected.name;
-    // this.surname = this.addressClientSelected.surname;
-    // this.address = this.addressClientSelected.address;
-    // this.referencia = this.addressClientSelected.referencia;
-    // this.region = this.addressClientSelected.region;
-    // this.ciudad = this.addressClientSelected.ciudad;
-    // this.telefono = this.addressClientSelected.telefono;
-    // this.email = this.addressClientSelected.email;
-    // this.nota = this.addressClientSelected.nota;
-    // this.pais = this.addressClientSelected.pais;
 
     this.formGroup?.patchValue({
       name: this.addressClientSelected?.name,
