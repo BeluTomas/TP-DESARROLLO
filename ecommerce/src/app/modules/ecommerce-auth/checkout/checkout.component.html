@@ -1,6 +1,5 @@
 <main class="main-wrapper">
 
-    <!-- Start Checkout Area  -->
     <div class="axil-checkout-area axil-section-gap">
         <div class="container">
             <form action="#">
@@ -9,7 +8,6 @@
                         <div class="axil-checkout-notice">
                             <div class="tab-pane" id="nav-address" role="tabpanel">
                                 <div class="axil-dashboard-address">
-                                    <!-- <p class="notice-text">.</p> -->
                                     <a href="#" onclick="return false;" (click)="newAddress()">NUEVA DIRECCIÓN +</a>
                                     <div class="row row--30">
                                         <ng-container *ngFor="let list_address of listAdressClient;let i=index">
@@ -29,21 +27,7 @@
                                             </div>
                                         </ng-container>
                                         
-                                        <!-- <div class="col-lg-6">
-                                            <div class="address-info">
-                                                <div class="addrss-header d-flex align-items-center justify-content-between">
-                                                    <h4 class="title mb-0">Billing Address</h4>
-                                                    <a href="#" class="address-edit"><i class="far fa-edit"></i></a>
-                                                </div>
-                                                <ul class="address-details">
-                                                    <li>Name: Annie Mario</li>
-                                                    <li>Email: annie@example.com</li>
-                                                    <li>Phone: 1234 567890</li>
-                                                    <li class="mt--30">7398 Smoke Ranch Road <br>
-                                                    Las Vegas, Nevada 89128</li>
-                                                </ul>
-                                            </div>
-                                        </div> -->
+                                      
                                     </div>
                                 </div>
                             </div>
@@ -377,6 +361,5 @@
             </form>
         </div>
     </div>
-    <!-- End Checkout Area  -->
 
 </main>

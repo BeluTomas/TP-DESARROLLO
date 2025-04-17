@@ -79,14 +79,7 @@ export class RegisterComponent implements OnInit {
   }
 
   registro() {
-    // if (!this.email ||
-    //   !this.name ||
-    //   !this.surname ||
-    //   !this.password ||
-    //   !this.repet_password) {
-    //   alertDanger("TODOS LOS CAMPOS SON REQUERIDOS");
-    //   return;
-    // }
+    
 
     if (this.formGroup?.value.password !== this.formGroup?.value.repet_password) {
       alertDanger("LAS CONTRASEÑAS DEBEN SER IGUALES");

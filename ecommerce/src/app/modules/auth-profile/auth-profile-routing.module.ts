@@ -16,7 +16,6 @@ const routes: Routes = [
       },
       {
         path: 'registro',
-        // canActivate: [AuthGuard],
         component: RegisterComponent
       }
     ]
