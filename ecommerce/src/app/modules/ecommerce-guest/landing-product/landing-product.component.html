@@ -1,5 +1,4 @@
 <main class="main-wrapper" *ngIf="productSelected">
-    <!-- Start Shop Area  -->
     <div class="axil-single-product-area bg-color-white">
         <div class="single-product-thumb axil-section-gap pb--20 pb_sm--0 bg-vista-white">
             <div class="container">
@@ -40,7 +39,6 @@
                                         , Precio Anterior: <del>{{ productSelected.price_usd }} USD</del>
                                     </b></small>
                                 </ng-container>
-                                <!-- <span class="price-amount" *ngIf="getDiscount() > 0">  </span> -->
                                 <span class="price-amount">{{ productSelected.price_usd - getDiscount() }} USD</span>
                                 <div class="product-rating">
                                     <div class="star-rating">
@@ -66,23 +64,7 @@
 
                                 <div class="product-variations-wrapper">
 
-                                    <!-- Start Product Variation  -->
-                                    <!-- <div class="product-variation">
-                                        <h6 class="title">Colors:</h6>
-                                        <div class="color-variant-wrapper">
-                                            <ul class="color-variant mt--0">
-                                                <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                                </li>
-                                                <li class="color-extra-02"><span><span class="color"></span></span>
-                                                </li>
-                                                <li class="color-extra-03"><span><span class="color"></span></span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div> -->
-                                    <!-- End Product Variation  -->
-
-                                    <!-- Start Product Variation  -->
+                                    
                                     <div class="product-variation product-size-variation" *ngIf="productSelected.type_inventario == 2">
                                         <h6 class="title">Tamaños:</h6>
                                         <ul class="range-variant">
@@ -91,29 +73,20 @@
                                             </ng-container>
                                         </ul>
                                     </div>
-                                    <!-- End Product Variation  -->
 
                                 </div>
 
-                                <!-- Start Product Action Wrapper  -->
                                 <div class="product-action-wrapper d-flex-center landing-product">
-                                    <!-- Start Quentity Action  -->
                                     <div class="pro-qty mr--20"><input type="text" id="qty-cart" value="1"></div>
-                                    <!-- End Quentity Action  -->
-
-                                    <!-- Start Product Action  -->
                                     <ul class="product-action d-flex-center mb--0">
                                         <li class="add-to-cart"><a href="#" onclick="return false;" (click)="addCart(productSelected)" class="axil-btn btn-bg-primary">Añadir al carrito</a></li>
                                         <li class="wishlist"><a href="wishlist.html" class="axil-btn wishlist-btn"><i class="far fa-heart"></i></a></li>
                                     </ul>
-                                    <!-- End Product Action  -->
 
                                 </div>
-                                <!-- End Product Action Wrapper  -->
 
                             </div>
                         </div>
-                        <!-- End .row -->
                         <div class="row">
                             <div class="col-lg-12">
                                 <ul class="pro-des-features">
@@ -136,21 +109,17 @@
                                         Producto Original
                                     </li>
                                 </ul>
-                                <!-- End .pro-des-features -->
                             </div>
                         </div>
-                        <!-- End .row -->
                     </div>
                     <div class="col-lg-12 mb--40">
                         <div class="woocommerce-tabs wc-tabs-wrapper bg-vista-white">
                             <div class="container">
-                                <!-- End .product-desc-wrapper -->
                                 <div class="additional-info pb--40 pb_sm--20">
                                     <h4 class="mb--60">Información Adicional</h4>
                                     <div class="product-additional-info" [innerHtml]="productSelected.description">
                                         
                                     </div>
-                                    <!-- End .product-additional-info -->
                                 </div>
             
                                 <div class="reviews-wrapper">
@@ -161,7 +130,6 @@
                                                 <h5 class="title">Reseñas de este producto</h5>
                                                 <ul class="comment-list">
                                                     <ng-container *ngFor="let REVIEW of REVIEWS">
-                                                        <!-- Start Single Comment  -->
                                                         <li class="comment">
                                                             <div class="comment-body">
                                                                 <div class="single-comment">
@@ -193,34 +161,25 @@
                                                                 </div>
                                                             </div>
                                                         </li>
-                                                        <!-- End Single Comment  -->
                                                     </ng-container>
                                                     
     
                                                 </ul>
                                             </div>
-                                            <!-- End .axil-commnet-area -->
                                         </div>
-                                        <!-- End .col -->
                                         <div class="col-lg-6 mb--40">
                                             
                                         </div>
-                                        <!-- End .col -->
                                     </div>
                                 </div>
-                                <!-- End .reviews-wrapper -->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- End .single-product-thumb -->
 
     </div>
-    <!-- End Shop Area  -->
-
-    <!-- Start Recently Viewed Product Area  -->
     <div class="axil-product-area bg-color-white axil-section-gap pb--50 pb_sm--30">
         <div class="container">
             <div class="section-title-wrapper">
@@ -235,9 +194,6 @@
                                 <a [href]="'/landing-producto/'+related_product.slug" >
                                     <img [src]="related_product.imagen" style="width: 255px;height: 255px;object-fit: cover;" alt="Product Images">
                                 </a>
-                                <!-- <div class="label-block label-right">
-                                    <div class="product-badget">20% OFF</div>
-                                </div> -->
                                 <div class="product-hover-action">
                                     <ul class="cart-action">
                                         <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
@@ -250,19 +206,8 @@
                                 <div class="inner">
                                     <h5 class="title"><a [href]="'/landing-producto/'+related_product.slug">{{ related_product.title }}</a></h5>
                                     <div class="product-price-variant">
-                                        <!-- <span class="price old-price">$30</span> -->
                                         <span class="price current-price">{{ related_product.price_usd }} USD</span>
                                     </div>
-                                    <!-- <div class="color-variant-wrapper">
-                                        <ul class="color-variant">
-                                            <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-02"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-03"><span><span class="color"></span></span>
-                                            </li>
-                                        </ul>
-                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -274,10 +219,8 @@
             </div>
         </div>
     </div>
-    <!-- End Recently Viewed Product Area  -->
 </main>
 
-    <!-- Product Quick View Modal Start -->
     <div class="modal fade quick-view-product" id="quick-view-modal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -355,23 +298,6 @@
 
                                         <div class="product-variations-wrapper">
 
-                                            <!-- Start Product Variation  -->
-                                            <!-- <div class="product-variation">
-                                                <h6 class="title">Colors:</h6>
-                                                <div class="color-variant-wrapper">
-                                                    <ul class="color-variant mt--0">
-                                                        <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                                        </li>
-                                                        <li class="color-extra-02"><span><span class="color"></span></span>
-                                                        </li>
-                                                        <li class="color-extra-03"><span><span class="color"></span></span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div> -->
-                                            <!-- End Product Variation  -->
-
-                                            <!-- Start Product Variation  -->
                                             <div class="product-variation" *ngIf="productSelectedModal.type_inventario == 2">
                                                 <h6 class="title">Tamaños:</h6>
                                                 <ul class="range-variant">
@@ -382,25 +308,16 @@
                                                     
                                                 </ul>
                                             </div>
-                                            <!-- End Product Variation  -->
 
                                         </div>
 
-                                        <!-- Start Product Action Wrapper  -->
                                         <div class="product-action-wrapper d-flex-center modal-product">
-                                            <!-- Start Quentity Action  -->
                                             <div class="pro-qty"><input type="text" value="1"></div>
-                                            <!-- End Quentity Action  -->
-
-                                            <!-- Start Product Action  -->
                                             <ul class="product-action d-flex-center mb--0">
                                                 <li class="add-to-cart"><a href="cart.html" class="axil-btn btn-bg-primary">Añadir al carrito</a></li>
                                                 <li class="wishlist"><a href="wishlist.html" class="axil-btn wishlist-btn"><i class="far fa-heart"></i></a></li>
                                             </ul>
-                                            <!-- End Product Action  -->
-
                                         </div>
-                                        <!-- End Product Action Wrapper  -->
                                     </div>
                                 </div>
                             </div>
@@ -410,4 +327,3 @@
             </div>
         </div>
     </div>
-    <!-- Product Quick View Modal End -->

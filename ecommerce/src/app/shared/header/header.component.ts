@@ -46,7 +46,6 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     if(this.cartService._authService.user){
       this.cartService.lisCarts(this.cartService._authService.user._id).subscribe((resp:CartL) => {
         console.log(resp);
-        // this.listCarts = resp.carts;
         resp.carts.forEach((cart:Cart) => {
           this.cartService.changeCart(cart);
         });
@@ -57,7 +56,6 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   ngAfterViewInit(): void {
     this.source = fromEvent(this.filter?.nativeElement, "keyup");
     this.source.pipe(debounceTime(500)).subscribe((c:any) => {
-      // console.log(this.searchProduct);
       let data = {
         searchProduct: this.searchProduct,
       }
@@ -99,9 +97,9 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
   getDiscountProduct(product:Product){
     if(product.campaing_discount){
-      if(product.campaing_discount.type_discount == 1){// 1 es porcentaje
+      if(product.campaing_discount.type_discount == 1){
         return product.price_usd*product.campaing_discount.discount*0.01;
-      }else{// 2 es moneda
+      }else{
         return product.campaing_discount.discount;
       }
     }

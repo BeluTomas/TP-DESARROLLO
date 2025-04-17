@@ -82,11 +82,6 @@ export class LandingProductComponent implements OnInit {
    return discount;
   }
   getCalNewPrice(product:any){
-    // if(this.FlashSale.type_discount == 1){
-    //   return product.price_usd - product.price_usd*this.FlashSale.discount*0.01;
-    // }else{
-    //   return product.price_usd - this.FlashSale.discount;
-    // }
     return 0;
   }
   selectedVariedad(variedad:any){
