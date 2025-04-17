@@ -82,11 +82,6 @@ export class LandingProductComponent implements OnInit {
    return discount;
   }
   getCalNewPrice(product:any){
-    // if(this.FlashSale.type_discount == 1){
-    //   return product.price_usd - product.price_usd*this.FlashSale.discount*0.01;
-    // }else{
-    //   return product.price_usd - this.FlashSale.discount;
-    // }
     return 0;
   }
   selectedVariedad(variedad:any){
@@ -127,7 +122,7 @@ export class LandingProductComponent implements OnInit {
       code_cupon: null,
       code_discount: this.SaleFlash ? this.SaleFlash._id : null,
       price_unitario: this.productSelected.price_usd,
-      subtotal: this.productSelected.price_usd - this.getDiscount(),//*$("#qty-cart").val()
+      subtotal: this.productSelected.price_usd - this.getDiscount(),
       total: (this.productSelected.price_usd - this.getDiscount())*$("#qty-cart").val(),
     }
     this.cartService.registerCart(data).subscribe((resp:any) => {
