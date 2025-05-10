@@ -1,0 +1,80 @@
+<div class="card card-custom gutter-b">
+    <div class="card-header">
+      <div class="card-title">
+        <h3 class="card-label"><i class="icon-2x text-dark-50 flaticon-file-1 mx-2"></i> Lista Categorias</h3>
+      </div>
+      <div class="card-toolbar">
+        <a
+          type="button"
+          class="btn btn-primary"
+          (click)="openCreate()"
+          ><i class="icon-2x text-white flaticon-file-1" ></i> Nueva Categoria</a
+        >
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- begin: Filtration form -->
+      <div class="form form-label-right">
+        <div class="form-group row">
+          <div class="col-lg-3">
+            <input
+              type="text"
+              class="form-control"
+              name="searchText"
+              placeholder="Buscar"
+              value=""
+              [(ngModel)]="search"
+              (keyup.enter)="allCategories()"
+            /><small class="form-text text-muted"
+              ><b>Buscar</b> por  nombre </small
+            >
+          </div>
+          <div class="col-2">
+            <button class="btn btn-dark" (click)="refresh()">Refresh</button>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="isLoading$ | async">
+          <span class="spinner spinner-primary ml-5"></span>
+      </ng-container>
+  
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table table-head-custom table-vertical-center" id="kt_advance_table_widget_1">
+                <thead>
+                    <tr class="text-left">
+                        <th >IMAGEN </th>
+                        <th >NOMBRE</th>
+                        <th >ESTADO</th>
+                        <th >ACCIÓN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let categorie of categories">
+                      <td>
+                        <img [src]="URL_BACKEND+'api/categories/uploads/categorie/'+categorie.imagen" style="width: 60px;" alt="" srcset="">
+                      </td>
+                      <td>{{ categorie.title }}</td>
+                      <td>
+                        <span class="label label-success label-pill label-inline mr-2" *ngIf="categorie.state == 1">Activo</span>
+                        <span class="label label-danger label-pill label-inline mr-2" *ngIf="categorie.state == 2">Desactivo</span>
+                    </td>
+                      <td>
+                        <a (click)="editCategorie(categorie)" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-1" ngbTooltip="Editar Categoria" ngbTooltipClass="kt-tooltip">
+                          <i class="icon-md fas fa-edit text-primary"></i>
+                        </a>
+      
+                        <a (click)="delete(categorie)" class="btn btn-icon btn-light btn-hover-primary btn-sm" ngbTooltip="Eliminar Categoria" ngbTooltipClass="kt-tooltip">
+                          <i class="icon-md text-danger fas fa-prescription-bottle"></i>
+                        </a>
+                      </td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </div>

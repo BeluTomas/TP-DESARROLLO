@@ -1,0 +1,81 @@
+<div class="card card-custom gutter-b">
+    <div class="card-header">
+      <div class="card-title">
+        <h3 class="card-label"><i class="icon-2x text-dark-50 flaticon-file-1 mx-2"></i> Lista de Cupones</h3>
+      </div>
+      <div class="card-toolbar">
+        <a
+          type="button"
+          class="btn btn-primary"
+          routerLink="/cupones/registrar-cupon"
+          ><i class="icon-2x text-white flaticon-file-1" ></i> Nuevo Cupon</a
+        >
+      </div>
+    </div>
+    <div class="card-body">
+
+        <div class="form form-label-right">
+            <div class="form-group row">
+              <div class="col-lg-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="searchText"
+                  placeholder="Buscar"
+                  value=""
+                  [(ngModel)]="search"
+                  (keyup.enter)="allCupons()"
+                /><small class="form-text text-muted"
+                  ><b>Buscar</b> por  codigo </small
+                >
+              </div>
+              <div class="col-2">
+                <button class="btn btn-dark" (click)="refresh()">Refresh</button>
+              </div>
+            </div>
+          </div>
+
+        <ng-container *ngIf="isLoading$ | async">
+            <span class="spinner spinner-primary ml-5"></span>
+        </ng-container>
+
+        <div class="row">
+            <div class="col-12">
+              <div class="table-responsive">
+                <table class="table table-head-custom table-vertical-center" id="kt_advance_table_widget_1">
+                    <thead>
+                        <tr class="text-left">
+                            <th >CODIGO</th>
+                            <th >TIPO</th>
+                            <th >DESCUENTO</th>
+                            <th >ESTADO</th>
+                            <th >ACCIÓN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cupon of cupones">
+                          <td>{{ cupon.code }}</td>
+                          <td>{{ cupon.type_segment == 1 ? 'PRODUCTO' : 'CATEGORIAS' }}</td>
+                          <td>{{ cupon.discount + (cupon.type_discount == 1 ? "%" : " ARG") }}</td>
+                          <td>
+                            <span class="label label-success label-pill label-inline mr-2" *ngIf="cupon.state == 1">Activo</span>
+                            <span class="label label-danger label-pill label-inline mr-2" *ngIf="cupon.state == 2">Desactivo</span>
+                        </td>
+                          <td>
+                            <a (click)="editCupon(cupon)" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-1" ngbTooltip="Editar Cupon" ngbTooltipClass="kt-tooltip">
+                              <i class="icon-md fas fa-edit text-primary"></i>
+                            </a>
+          
+                            <a (click)="delete(cupon)" class="btn btn-icon btn-light btn-hover-primary btn-sm" ngbTooltip="Eliminar Cupon" ngbTooltipClass="kt-tooltip">
+                              <i class="icon-md text-danger fas fa-prescription-bottle"></i>
+                            </a>
+                          </td>
+                        </tr>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+    </div>
+  </div>
